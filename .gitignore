@@ -1,0 +1,10 @@
+.env
+.venv/
+chroma_db/
+pdf_cache/
+static/
+manim_scripts/
+__pycache__/
+*.pyc
+.env.example
+mnt/
