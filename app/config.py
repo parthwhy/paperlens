@@ -6,9 +6,7 @@ class Settings(BaseSettings):
     # LLM
     groq_api_key: str
     groq_model: str = "llama-3.3-70b-versatile"
-
-    # Embeddings
-    embedding_model: str = "BAAI/bge-small-en-v1.5"
+    openrouter_api_key: str = ""
 
     # Storage
     chroma_persist_dir: str = "./chroma_db"

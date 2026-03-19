@@ -42,6 +42,7 @@ class ChatRequest(BaseModel):
     paper_id: str
     message: str
     history: list[ChatMessage] = []
+    model: str = "groq"  # "groq" or "openrouter"
 
 
 class CitedChunk(BaseModel):

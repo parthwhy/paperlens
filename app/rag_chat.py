@@ -6,6 +6,7 @@ Every answer is strictly grounded in the paper — no hallucination outside it.
 """
 
 from groq import AsyncGroq
+from openai import AsyncOpenAI
 from loguru import logger
 
 from app.config import settings
@@ -28,13 +29,18 @@ STRICT RULES:
 class RAGChatService:
     def __init__(self, ingestion_service: PaperIngestionService):
         self.ingestion = ingestion_service
-        self.client = AsyncGroq(api_key=settings.groq_api_key)
+        self.groq_client = AsyncGroq(api_key=settings.groq_api_key)
+        self.openrouter_client = AsyncOpenAI(
+            base_url="https://openrouter.ai/api/v1",
+            api_key=settings.openrouter_api_key
+        ) if settings.openrouter_api_key else None
 
     async def chat(
         self,
         paper_id: str,
         message: str,
-        history: list[ChatMessage]
+        history: list[ChatMessage],
+        model: str = "groq"
     ) -> ChatResponse:
 
         # 1. Retrieve relevant chunks from ChromaDB
@@ -58,13 +64,21 @@ class RAGChatService:
 QUESTION: {message}"""
         messages.append({"role": "user", "content": user_content})
 
-        # 4. Call Groq
-        response = await self.client.chat.completions.create(
-            model=settings.groq_model,
-            messages=messages,
-            temperature=0.2,         # low temp = factual, grounded
-            max_tokens=800,
-        )
+        # 4. Call LLM (Groq or OpenRouter)
+        if model == "openrouter" and self.openrouter_client:
+            response = await self.openrouter_client.chat.completions.create(
+                model="nvidia/nemotron-super-49b-v1:free",
+                messages=messages,
+                temperature=0.2,
+                max_tokens=800,
+            )
+        else:
+            response = await self.groq_client.chat.completions.create(
+                model=settings.groq_model,
+                messages=messages,
+                temperature=0.2,
+                max_tokens=800,
+            )
 
         answer = response.choices[0].message.content
 
@@ -86,7 +100,9 @@ QUESTION: {message}"""
     def _retrieve(self, paper_id: str, query: str, top_k: int = 5) -> list[dict]:
         """Query ChromaDB collection for most relevant chunks."""
         collection = self.ingestion.chroma_client.get_collection(name=paper_id)
-        query_embedding = self.ingestion.embed_model.get_text_embedding(query)
+        
+        # Embed query using sentence-transformers
+        query_embedding = self.ingestion.embed_model.encode([query], show_progress_bar=False)[0].tolist()
 
         results = collection.query(
             query_embeddings=[query_embedding],

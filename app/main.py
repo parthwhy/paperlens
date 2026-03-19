@@ -53,6 +53,9 @@
 
 
 from fastapi import FastAPI 
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 from app.papers import router
 # uvicorn app.main:app --reload --port 8080
 
@@ -64,5 +67,21 @@ app= FastAPI(
     version="1.0.0"
 )
 
-app.include_router(router)
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Static files for Manim animations
+static_dir = Path("./static")
+static_dir.mkdir(exist_ok=True)
+(static_dir / "animations").mkdir(exist_ok=True)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Include router with /api/v1 prefix
+app.include_router(router, prefix="/api/v1")
 

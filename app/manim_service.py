@@ -113,9 +113,13 @@ class ManimService:
     def _get_context(self, paper_id: str, concept: str, top_k: int = 3) -> str:
         try:
             collection = self.ingestion.chroma_client.get_collection(name=paper_id)
-            embedding = self.ingestion.embed_model.get_text_embedding(concept)
+            
+            # Embed query and convert to plain list
+            embedding = list(self.ingestion.embed_model.embed([concept]))[0]
+            query_embedding = embedding.tolist()  # converts ndarray to plain list
+            
             results = collection.query(
-                query_embeddings=[embedding],
+                query_embeddings=[query_embedding],
                 n_results=top_k,
                 include=["documents"]
             )
@@ -168,7 +172,6 @@ Generate a clear, educational animation. Use arrows, boxes, and labels to show t
         cmd = [
             "manim",
             quality_flag,
-            "--media_dir", str(self.output_dir / "manim_media"),
             str(script_path),
             "ConceptAnimation",
         ]
@@ -184,14 +187,15 @@ Generate a clear, educational animation. Use arrows, boxes, and labels to show t
             stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=120)
 
             if proc.returncode == 0:
-                # Find the rendered file and move to output_dir
-                media_dir = self.output_dir / "manim_media"
-                rendered = list(media_dir.rglob("ConceptAnimation*.mp4"))
-                if rendered:
-                    rendered[0].rename(video_path)
+                # Find the rendered file in media/videos/{script_stem}/480p15/ConceptAnimation.mp4
+                script_stem = script_path.stem
+                expected_path = Path("media") / "videos" / script_stem / "480p15" / "ConceptAnimation.mp4"
+                
+                if expected_path.exists():
+                    expected_path.rename(video_path)
                     logger.info(f"Animation ready: {video_path}")
                 else:
-                    logger.error("Manim ran but no MP4 found")
+                    logger.error(f"Manim ran but no MP4 found at {expected_path}")
                     (self.output_dir / f"{anim_id}.failed").touch()
             else:
                 logger.error(f"Manim failed:\n{stderr.decode()}")

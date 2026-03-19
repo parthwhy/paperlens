@@ -101,7 +101,9 @@ SENTENCE THE USER IS HOVERING:
     def _get_context(self, paper_id: str, query: str, top_k: int = 3) -> str:
         """Retrieve top-k relevant chunks as a context string."""
         collection = self.ingestion.chroma_client.get_collection(name=paper_id)
-        query_embedding = self.ingestion.embed_model.get_text_embedding(query)
+        
+        # Embed query using sentence-transformers
+        query_embedding = self.ingestion.embed_model.encode([query], show_progress_bar=False)[0].tolist()
 
         results = collection.query(
             query_embeddings=[query_embedding],

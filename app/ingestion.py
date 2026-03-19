@@ -8,6 +8,7 @@ PaperIngestionService
 """
 
 import re
+import asyncio
 import arxiv
 import fitz                          # PyMuPDF
 import chromadb
@@ -15,10 +16,9 @@ from pathlib import Path
 from loguru import logger
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-from llama_index.core import Document, VectorStoreIndex, StorageContext
 from llama_index.core.node_parser import SentenceSplitter
-from llama_index.embeddings.huggingface import HuggingFaceEmbedding
-from llama_index.vector_stores.chroma import ChromaVectorStore
+
+from sentence_transformers import SentenceTransformer
 
 from app.config import settings
 from app.schemas import IngestResponse
@@ -26,10 +26,15 @@ from app.schemas import IngestResponse
 
 class PaperIngestionService:
     def __init__(self):
-        self.embed_model = HuggingFaceEmbedding(model_name=settings.embedding_model)
+        # Use sentence-transformers for faster embedding
+        self.embed_model = SentenceTransformer('all-MiniLM-L6-v2')
         self.chroma_client = chromadb.PersistentClient(path=settings.chroma_persist_dir)
         self._pdf_cache_dir = Path("./pdf_cache")
         self._pdf_cache_dir.mkdir(exist_ok=True)
+
+    def _embed(self, texts: list[str]) -> list[list[float]]:
+        """Embed texts using fastembed."""
+        return list(self.embed_model.embed(texts))
 
     # ── Public ────────────────────────────────────────────────────────────────
 
@@ -58,17 +63,9 @@ class PaperIngestionService:
             message="Paper ingested successfully"
         )
 
-    def get_retriever(self, paper_id: str):
-        """Return a LlamaIndex retriever scoped to this paper's ChromaDB collection."""
-        collection = self.chroma_client.get_collection(name=paper_id)
-        vector_store = ChromaVectorStore(chroma_collection=collection)
-        storage_context = StorageContext.from_defaults(vector_store=vector_store)
-        index = VectorStoreIndex.from_vector_store(
-            vector_store,
-            embed_model=self.embed_model,
-            storage_context=storage_context
-        )
-        return index.as_retriever(similarity_top_k=5)
+    def get_collection(self, paper_id: str):
+        """Return ChromaDB collection for this paper."""
+        return self.chroma_client.get_collection(name=paper_id)
 
     def paper_exists(self, paper_id: str) -> bool:
         try:
@@ -160,23 +157,16 @@ class PaperIngestionService:
         metadatas = [{"section": c["section"], "page": c["page"]} for c in chunks]
         ids = [f"{paper_id}_chunk_{i}" for i in range(len(chunks))]
 
-        # Embed in batches of 64
-        batch_size = 64
-        for i in range(0, len(documents), batch_size):
-            batch_docs = documents[i:i+batch_size]
-            batch_ids = ids[i:i+batch_size]
-            batch_meta = metadatas[i:i+batch_size]
+        logger.info(f"Embedding {len(documents)} chunks...")
+        
+        # Embed all documents using sentence-transformers (much faster than fastembed)
+        embeddings = self.embed_model.encode(documents, show_progress_bar=False, batch_size=32).tolist()
 
-            embeddings = [
-                self.embed_model.get_text_embedding(doc)
-                for doc in batch_docs
-            ]
-
-            collection.add(
-                documents=batch_docs,
-                embeddings=embeddings,
-                metadatas=batch_meta,
-                ids=batch_ids
-            )
+        collection.add(
+            documents=documents,
+            embeddings=embeddings,
+            metadatas=metadatas,
+            ids=ids
+        )
 
         logger.info(f"Stored {len(chunks)} chunks in ChromaDB collection '{paper_id}'")

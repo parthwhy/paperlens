@@ -1,3 +1,6 @@
 git add .
 git commit -m "feat: description of what you changed"
 git push
+
+
+uvicorn app.main:app --reload --port 8080
