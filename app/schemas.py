@@ -70,6 +70,7 @@ class ConceptEdge(BaseModel):
     source: str
     target: str
     weight: float
+    relation: Optional[str] = None   # e.g. "extends", "evaluates_on"
 
 
 class ConceptMapResponse(BaseModel):
@@ -86,6 +87,7 @@ class AnimationRequest(BaseModel):
 
 
 class AnimationResponse(BaseModel):
+    job_id: str                          # unique animation ID for polling
     concept: str
     video_url: str                       # served from /static/animations/
     duration_seconds: Optional[float]

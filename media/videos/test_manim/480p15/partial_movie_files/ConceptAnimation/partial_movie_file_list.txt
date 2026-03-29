@@ -1,8 +1,0 @@
-# This file is used internally by FFMPEG.
-file 'file:C:/Users/Parth Patel/Downloads/paper len/media/videos/test_manim/480p15/partial_movie_files/ConceptAnimation/1185818338_1643696800_223132457.mp4'
-file 'file:C:/Users/Parth Patel/Downloads/paper len/media/videos/test_manim/480p15/partial_movie_files/ConceptAnimation/624642324_2919340033_3673024109.mp4'
-file 'file:C:/Users/Parth Patel/Downloads/paper len/media/videos/test_manim/480p15/partial_movie_files/ConceptAnimation/624642324_3802375265_2616039679.mp4'
-file 'file:C:/Users/Parth Patel/Downloads/paper len/media/videos/test_manim/480p15/partial_movie_files/ConceptAnimation/624642324_1555329055_4131132508.mp4'
-file 'file:C:/Users/Parth Patel/Downloads/paper len/media/videos/test_manim/480p15/partial_movie_files/ConceptAnimation/624642324_2072312945_4066856352.mp4'
-file 'file:C:/Users/Parth Patel/Downloads/paper len/media/videos/test_manim/480p15/partial_movie_files/ConceptAnimation/624642324_3099128410_3799629937.mp4'
-file 'file:C:/Users/Parth Patel/Downloads/paper len/media/videos/test_manim/480p15/partial_movie_files/ConceptAnimation/624642324_784179552_2576314463.mp4'

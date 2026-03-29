@@ -70,7 +70,12 @@ app= FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5173"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -81,6 +86,11 @@ static_dir = Path("./static")
 static_dir.mkdir(exist_ok=True)
 (static_dir / "animations").mkdir(exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Static files for PDF cache
+pdf_cache_dir = Path("./pdf_cache")
+pdf_cache_dir.mkdir(exist_ok=True)
+app.mount("/pdfs", StaticFiles(directory="pdf_cache"), name="pdfs")
 
 # Include router with /api/v1 prefix
 app.include_router(router, prefix="/api/v1")

@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Rethink+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&family=Manrope:wght@200;300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", serif;
+  --font-sans: "Rethink Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Manrope", ui-monospace, SFMono-Regular, monospace;
+
+  --color-background: #fcf9f8;
+  --color-on-background: #1c1b1b;
+  
+  --color-surface: #fcf9f8;
+  --color-surface-container-low: #f6f3f2;
+  --color-surface-container: #f0eded;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-highest: #e1e3e4;
+  --color-surface-bright: rgba(255, 255, 255, 0.8);
+  
+  --color-inverse-surface: #1c1b1b;
+  
+  --color-primary: #5a3988;
+  --color-primary-container: #7351a2;
+  --color-on-primary: #ffffff;
+  
+  --color-secondary-fixed: #ffdcbf;
+  --color-primary-fixed: #eddcff;
+  
+  --color-outline-variant: rgba(0, 0, 0, 0.15);
+}
+
+@layer base {
+  body {
+    @apply bg-background text-on-background font-sans antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+.dot-grid {
+  background-image: radial-gradient(circle, var(--color-outline-variant) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.glass {
+  @apply bg-surface-bright backdrop-blur-xl border border-white/20 shadow-lg;
+}
+
+.paper-card {
+  @apply bg-surface-container-lowest rounded-xl;
+}
+
+.ambient-shadow {
+  box-shadow: 0 10px 40px rgba(111, 77, 158, 0.05);
+}
+
+.ghost-border {
+  @apply border border-outline-variant;
+}
+
+.primary-gradient {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-container));
+}
+
+.clip-path-fold {
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 85% 100%, 0 100%);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-surface-container-highest rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-on-background/30;
+}
