@@ -182,53 +182,53 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
   };
 
   return (
-    <div className="flex-1 w-full bg-surface-container p-8 overflow-auto flex flex-col gap-8 dot-grid">
+    <div className="flex-1 w-full bg-[#f4f4f0] p-8 overflow-auto flex flex-col gap-8 dot-grid">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => setView('concept-map')}
-            className="p-2 hover:bg-surface-container-highest rounded-full transition-colors"
+            className="w-10 h-10 border-2 border-black bg-white flex items-center justify-center shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-transform"
           >
-            <X className="w-5 h-5 text-on-background/40" />
+            <X className="w-6 h-6 font-bold" />
           </button>
-          <h2 className="text-2xl font-serif font-bold">Animation Studio</h2>
+          <h2 className="text-3xl font-black text-on-background uppercase tracking-tight">Animation Studio</h2>
         </div>
       </div>
 
       <div className="flex gap-8 flex-1 min-h-0">
         {/* Left: Concept Selection */}
-        <div className="w-96 paper-card p-8 flex flex-col gap-6 ambient-shadow shrink-0">
-          <h3 className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-on-background/40">
+        <div className="w-96 bg-white brutal-border shadow-[8px_8px_0_0_rgba(0,0,0,1)] p-8 flex flex-col gap-6 shrink-0">
+          <h3 className="text-sm font-black uppercase tracking-widest text-primary">
             Main Concepts
           </h3>
           
           {loadingConcepts ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
           ) : concepts.length === 0 ? (
-            <div className="text-sm text-on-background/40 italic py-8 text-center">
+            <div className="text-base font-bold text-gray-400 italic py-8 text-center bg-surface-dim brutal-border p-4 shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
               No concepts found. Make sure the paper is fully ingested.
             </div>
           ) : (
-            <div className="space-y-3 overflow-y-auto max-h-[600px] pr-2">
+            <div className="space-y-4 overflow-y-auto max-h-[600px] pr-2 custom-scrollbar">
               {concepts.map((concept) => (
                 <button
                   key={concept.id}
                   onClick={() => setSelectedConcept(concept)}
                   className={cn(
-                    "w-full text-left p-4 rounded-xl border transition-all",
+                    "w-full text-left p-4 transition-transform brutal-border block relative",
                     selectedConcept?.id === concept.id
-                      ? "bg-inverse-surface text-white border-inverse-surface shadow-md"
-                      : "border-outline-variant/20 hover:bg-surface-container-highest"
+                      ? "bg-primary text-white shadow-[4px_4px_0_0_rgba(0,0,0,1)] translate-x-1 -translate-y-1"
+                      : "bg-surface hover:-translate-y-1 shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)]"
                   )}
                 >
-                  <div className="font-bold text-sm mb-1">{concept.label}</div>
-                  <div className="text-xs opacity-60 line-clamp-2">
+                  <div className="font-black text-lg mb-1">{concept.label}</div>
+                  <div className={cn("text-sm font-medium line-clamp-2", selectedConcept?.id === concept.id ? "text-white/90" : "text-gray-600")}>
                     {concept.explanation}
                   </div>
                   {concept.key_equation && (
-                    <div className="text-[10px] font-mono mt-2 opacity-40">
+                    <div className="text-xs font-black uppercase mt-3 bg-black/10 inline-block px-2 py-1">
                       Has equation
                     </div>
                   )}
@@ -238,17 +238,17 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
           )}
 
           {selectedConcept && (
-            <div className="mt-auto pt-6 border-t border-outline-variant/10">
+            <div className="mt-auto pt-6 border-t-4 border-black border-dashed">
               <button
                 onClick={handleStartRendering}
                 disabled={!paperId}
-                className="w-full primary-gradient text-white py-4 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] shadow-lg hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full bg-[#10b981] text-black brutal-border p-4 text-sm font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Play className="w-4 h-4" />
+                <Play className="w-5 h-5 fill-black" />
                 Start Rendering Video
               </button>
               {error && (
-                <p className="text-xs text-red-600 font-medium mt-3">{error}</p>
+                <p className="text-sm text-red-600 font-bold mt-3 bg-red-100 p-2 brutal-border text-center">{error}</p>
               )}
             </div>
           )}
@@ -256,48 +256,49 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
 
         {/* Center: Selected Concept Details */}
         <div className="flex-1 flex flex-col gap-8 min-w-[500px]">
-          <div className="paper-card p-8 flex-1 flex flex-col gap-6 ambient-shadow">
+          <div className="bg-white brutal-border shadow-[8px_8px_0_0_rgba(0,0,0,1)] p-8 flex-1 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
             {selectedConcept ? (
               <>
-                <div>
-                  <h3 className="text-xl font-serif font-bold mb-2">
+                <div className="border-b-4 border-black pb-4">
+                  <h3 className="text-4xl font-black mb-3">
                     {selectedConcept.label}
                   </h3>
-                  <div className="inline-block px-3 py-1 rounded-full bg-surface-container-highest text-[10px] font-mono font-bold uppercase tracking-widest text-on-background/60">
+                  <div className="inline-block px-4 py-1 bg-surface-muted brutal-border shadow-[2px_2px_0_0_rgba(0,0,0,1)] text-xs font-black uppercase tracking-widest text-gray-800">
                     {selectedConcept.type}
                   </div>
                 </div>
 
-                <div className="bg-surface-container-low rounded-xl p-4 text-sm leading-relaxed">
+                <div className="bg-surface-dim brutal-border p-6 text-lg font-medium leading-relaxed shadow-[4px_4px_0_0_rgba(0,0,0,1)] text-gray-800">
                   {selectedConcept.explanation}
                 </div>
 
                 {selectedConcept.key_equation && (
-                  <div className="bg-inverse-surface/5 rounded-xl p-4 border border-outline-variant/10">
-                    <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-on-background/40 mb-2">
+                  <div className="bg-primary text-white brutal-border p-6 shadow-[4px_4px_0_0_rgba(0,0,0,1)] overflow-x-auto">
+                    <div className="text-xs font-black uppercase tracking-widest text-white/70 mb-3">
                       Key Equation
                     </div>
-                    <div className="font-mono text-sm text-on-background/80">
+                    <div className="font-mono text-xl font-bold">
                       {selectedConcept.key_equation}
                     </div>
                   </div>
                 )}
 
                 {selectedConcept.visual_hint && (
-                  <div className="bg-surface-container-low rounded-xl p-4">
-                    <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-on-background/40 mb-3">
+                  <div className="bg-white brutal-border border-dashed p-6 shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
+                    <div className="text-xs font-black uppercase tracking-widest text-primary mb-4">
                       Visual Approach
                     </div>
                     {selectedConcept.visual_hint.metaphor && (
-                      <div className="text-sm italic text-on-background/70 mb-3">
+                      <div className="text-base font-bold italic text-gray-800 mb-4 bg-[#fef08a] p-3 brutal-border inline-block">
                         "{selectedConcept.visual_hint.metaphor}"
                       </div>
                     )}
                     {selectedConcept.visual_hint.steps && (
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         {selectedConcept.visual_hint.steps.slice(0, 3).map((step: string, i: number) => (
-                          <div key={i} className="text-xs text-on-background/60">
-                            {step}
+                          <div key={i} className="text-sm font-bold text-gray-700 flex gap-3">
+                            <span className="w-6 h-6 rounded-full bg-black text-white shrink-0 flex items-center justify-center font-black">{i + 1}</span>
+                            <span className="mt-0.5">{step}</span>
                           </div>
                         ))}
                       </div>
@@ -306,7 +307,7 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
                 )}
               </>
             ) : (
-              <div className="flex-1 flex items-center justify-center text-on-background/40 text-sm">
+              <div className="flex-1 flex items-center justify-center text-gray-400 font-bold text-xl italic text-center p-12 bg-surface-dim brutal-border border-dashed">
                 Select a concept from the list to see details
               </div>
             )}
@@ -315,26 +316,26 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
 
         {/* Right: Animation Queue & Videos */}
         <div className="w-96 flex flex-col gap-8 shrink-0">
-          <div className="paper-card p-8 flex flex-col gap-6 ambient-shadow flex-1 overflow-hidden">
-            <h3 className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-on-background/40">
+          <div className="bg-white brutal-border shadow-[8px_8px_0_0_rgba(0,0,0,1)] p-8 flex flex-col gap-6 flex-1 overflow-hidden">
+            <h3 className="text-sm font-black uppercase tracking-widest text-primary pb-4 border-b-4 border-black">
               Animation Queue ({animations.length})
             </h3>
             
             {animations.length === 0 ? (
-              <div className="flex-1 flex items-center justify-center text-xs text-on-background/40 italic">
+              <div className="flex-1 flex items-center justify-center text-sm font-bold text-gray-400 italic bg-surface-dim brutal-border border-dashed p-6 text-center">
                 No animations yet. Select a concept and click "Start Rendering Video"
               </div>
             ) : (
-              <div className="space-y-4 overflow-y-auto pr-2">
+              <div className="space-y-6 overflow-y-auto pr-2 custom-scrollbar">
                 {animations.map((anim) => (
                   <div
                     key={anim.job_id}
-                    className="border border-outline-variant/20 rounded-xl p-4 space-y-3"
+                    className="bg-surface-dim brutal-border shadow-[4px_4px_0_0_rgba(0,0,0,1)] p-5 flex flex-col gap-4"
                   >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="font-bold text-sm flex-1">{anim.concept}</div>
+                    <div className="flex items-start justify-between gap-2 border-b-2 border-black pb-2">
+                      <div className="font-black text-base flex-1">{anim.concept}</div>
                       <div className={cn(
-                        "text-[10px] font-mono font-bold uppercase tracking-widest",
+                        "text-[10px] font-black uppercase tracking-widest px-2 py-1 brutal-border bg-white shadow-[2px_2px_0_0_rgba(0,0,0,1)]",
                         getStatusColor(anim.status)
                       )}>
                         {getStatusText(anim.status)}
@@ -342,25 +343,27 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
                     </div>
 
                     {['planning', 'coding', 'rendering'].includes(anim.status) && (
-                      <div className="flex items-center gap-2">
-                        <Loader2 className="w-3 h-3 animate-spin text-primary" />
-                        <div className="text-xs text-on-background/60">
+                      <div className="flex items-center gap-3 bg-white brutal-border p-3">
+                        <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                        <div className="text-sm font-bold text-gray-800">
                           {getStatusText(anim.status)}
                         </div>
                       </div>
                     )}
 
                     {anim.status === 'ready' && anim.video_url && (
-                      <div className="space-y-2">
-                        <video
-                          src={`http://127.0.0.1:8000${anim.video_url}`}
-                          controls
-                          className="w-full rounded-lg bg-inverse-surface"
-                        />
+                      <div className="space-y-3">
+                        <div className="brutal-border shadow-[4px_4px_0_0_rgba(0,0,0,1)] bg-black p-1">
+                          <video
+                            src={`http://127.0.0.1:8000${anim.video_url}`}
+                            controls
+                            className="w-full bg-black outline-none"
+                          />
+                        </div>
                         <a
                           href={`http://127.0.0.1:8000${anim.video_url}`}
                           download
-                          className="block w-full text-center px-4 py-2 rounded-lg bg-surface-container-highest hover:bg-surface-container text-xs font-bold uppercase tracking-widest transition-colors"
+                          className="block w-full text-center px-4 py-3 bg-[#10b981] hover:bg-[#059669] text-black brutal-border shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-transform text-xs font-black uppercase tracking-widest"
                         >
                           Download MP4
                         </a>
@@ -368,13 +371,13 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
                     )}
 
                     {anim.status === 'failed' && (
-                      <div className="flex flex-col gap-2">
-                        <div className="text-xs text-red-600 line-clamp-3" title={anim.error}>
+                      <div className="flex flex-col gap-3">
+                        <div className="text-xs font-bold text-red-700 bg-red-100 p-3 brutal-border shadow-[4px_4px_0_0_rgba(0,0,0,1)]" title={anim.error}>
                           {anim.error || "Rendering failed. Try again."}
                         </div>
                         <button 
                           onClick={() => handleRetry(anim)}
-                          className="w-full text-center px-4 py-2 rounded-lg bg-red-600/10 hover:bg-red-600/20 text-red-600 text-[10px] font-bold uppercase tracking-widest transition-colors"
+                          className="w-full text-center px-4 py-3 bg-[#fca5a5] hover:bg-[#f87171] text-black brutal-border shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-transform text-[10px] font-black uppercase tracking-widest"
                         >
                           Retry Animation
                         </button>

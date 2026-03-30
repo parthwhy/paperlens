@@ -1,99 +1,64 @@
-import { useState, useEffect } from 'react';
-import { cn } from './lib/utils';
-import type { View } from './types';
+import { useState } from 'react';
+import type { View, PaperMetadata } from './types';
 
-// Import split components
-import { Navbar } from './components/Navbar';
-import { Sidebar } from './components/Sidebar';
+import { GlobalNav } from './components/GlobalNav';
+import { LibrarySidebar } from './components/LibrarySidebar';
 import { LandingPage } from './components/LandingPage';
 import { ConceptMap } from './components/ConceptMap';
 import { DocumentView } from './components/DocumentView';
 import { ManimDashboard } from './components/ManimDashboard';
 
-// Custom hook to persist state to localStorage
-function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val: T) => T)) => void] {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      console.warn(`Error reading localStorage key "${key}":`, error);
-      return initialValue;
-    }
+// Persist state in localStorage
+function useLocalStorage<T>(key: string, init: T): [T, (v: T | ((p: T) => T)) => void] {
+  const [val, setVal] = useState<T>(() => {
+    try { const item = localStorage.getItem(key); return item ? JSON.parse(item) : init; }
+    catch { return init; }
   });
-
-  const setValue = (value: T | ((val: T) => T)) => {
-    try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
-    } catch (error) {
-      console.warn(`Error setting localStorage key "${key}":`, error);
-    }
+  const set = (v: T | ((p: T) => T)) => {
+    const next = v instanceof Function ? v(val) : v;
+    setVal(next);
+    localStorage.setItem(key, JSON.stringify(next));
   };
-
-  return [storedValue, setValue];
+  return [val, set];
 }
-
-// --- Main App ---
 
 export default function App() {
   const [view, setView] = useLocalStorage<View>('paperlens_view', 'landing');
   const [paperId, setPaperId] = useLocalStorage<string | null>('paperlens_paperId', null);
-  const [paperTitle, setPaperTitle] = useLocalStorage<string>('paperlens_paperTitle', 'Quantum Computing Paper');
 
-  const handlePaperIngested = (newPaperId: string) => {
-    setPaperId(newPaperId);
-    // TODO: Fetch paper title from API if needed
-    setPaperTitle('Research Paper'); // Placeholder
+  const handlePaperIngested = (id: string) => {
+    setPaperId(id);
+    setView('document');
+  };
+
+  const handleSelectPaper = (paper: PaperMetadata) => {
+    setPaperId(paper.paper_id);
+    setView('document');
   };
 
   return (
-    <div className={cn("min-h-screen flex flex-col", view === 'landing' ? "bg-inverse-surface" : "bg-background")}>
-      {view !== 'landing' && <Navbar currentView={view} setView={setView} paperTitle={paperTitle} />}
-      
-      <main className="flex-1 flex overflow-hidden w-full">
-        {view === 'landing' && (
-          <LandingPage 
-            setView={setView} 
-            onPaperIngested={handlePaperIngested}
-          />
-        )}
-        
-        {view === 'concept-map' && (
-          <>
-            <Sidebar activeItem="concept-map" />
-            <ConceptMap setView={setView} paperId={paperId} />
-          </>
-        )}
-        
-        {view === 'document' && (
-          <>
-            <Sidebar activeItem="methodology" />
-            <DocumentView paperId={paperId} />
-          </>
-        )}
+    <div className="h-screen w-screen flex bg-background overflow-hidden selection:bg-primary-muted font-sans text-on-background">
+      {/* 1. Global Navigation Strip */}
+      <GlobalNav view={view} setView={setView} />
 
+      {/* 2. Library Sidebar (History) */}
+      <LibrarySidebar currentPaperId={paperId} onSelectPaper={handleSelectPaper} />
+      
+      {/* 3. Main Content Area */}
+      <main className="flex-1 flex overflow-hidden bg-background">
+        {view === 'landing' && (
+          <LandingPage setView={setView} onPaperIngested={handlePaperIngested} />
+        )}
+        {view === 'concept-map' && (
+          <ConceptMap setView={setView} paperId={paperId} />
+        )}
+        {view === 'document' && (
+          <DocumentView paperId={paperId} />
+        )}
         {view === 'manim' && (
           <ManimDashboard setView={setView} paperId={paperId} />
         )}
       </main>
-
-      {/* View Switcher (for demo purposes) */}
-      <div className="fixed bottom-4 right-4 flex gap-2 z-[100] bg-white/10 backdrop-blur-md p-1 rounded-full border border-white/10">
-        {(['landing', 'concept-map', 'document', 'manim'] as View[]).map((v) => (
-          <button
-            key={v}
-            onClick={() => setView(v)}
-            className={cn(
-              "px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all",
-              view === v ? "bg-primary text-white" : "bg-white text-primary border border-black/10 shadow-sm"
-            )}
-          >
-            {v.replace('-', ' ')}
-          </button>
-        ))}
-      </div>
     </div>
   );
 }

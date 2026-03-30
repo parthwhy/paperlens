@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { motion } from 'framer-motion';
 import { MessageSquare, X, GripVertical, ZoomIn, ZoomOut } from 'lucide-react';
@@ -175,7 +175,7 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
   // Show message when no paper is loaded
   if (!paperId) {
     return (
-      <div className="flex-1 w-full bg-surface-container-low overflow-hidden flex items-center justify-center dot-grid">
+      <div className="flex-1 w-full bg-surface-dim overflow-hidden flex items-center justify-center dot-grid">
         <div className="text-center max-w-md p-8">
           <p className="text-lg font-serif text-on-background/60 mb-2">No paper loaded</p>
           <p className="text-sm text-on-background/40">Please ingest a paper from the landing page first</p>
@@ -249,154 +249,152 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
   }, []);
 
   return (
-    <div className="flex-1 w-full bg-surface-container-low overflow-hidden flex flex-col dot-grid">
-      {/* PDF Controls - Sticky */}
-      <div className="sticky top-0 z-10 flex items-center justify-between px-8 py-4 bg-white/80 backdrop-blur-sm border-b border-outline-variant/10">
-        <div className="flex items-center gap-4">
-          <span className="text-sm font-medium text-on-background">
-            {numPages} {numPages === 1 ? 'page' : 'pages'}
-          </span>
-        </div>
+    <div className="flex-1 w-full h-full flex bg-background overflow-hidden relative">
+      
+      {/* 1. PDF Area (Main Pane) */}
+      <div className={`flex-1 flex flex-col relative h-full overflow-hidden transition-all ${isChatOpen ? 'border-r-2 border-black' : ''}`}>
+        {/* PDF Controls - Sticky */}
+        <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-surface border-b-2 border-black">
+          <div className="flex items-center gap-4">
+            <span className="font-bold text-on-background">
+              {numPages} {numPages === 1 ? 'page' : 'pages'}
+            </span>
+          </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={zoomOut}
-            className="p-2 rounded-lg hover:bg-surface-container transition-colors"
-            title="Zoom out (Ctrl + Scroll)"
-          >
-            <ZoomOut className="w-5 h-5" />
-          </button>
-          <span className="text-sm font-medium text-on-background min-w-[60px] text-center">
-            {Math.round(scale * 100)}%
-          </span>
-          <button
-            onClick={zoomIn}
-            className="p-2 rounded-lg hover:bg-surface-container transition-colors"
-            title="Zoom in (Ctrl + Scroll)"
-          >
-            <ZoomIn className="w-5 h-5" />
-          </button>
-          <span className="text-xs text-on-background/40 ml-2">Ctrl+Scroll</span>
-        </div>
-      </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={zoomOut}
+              className="p-2 brutal-border rounded-lg hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-transform bg-surface"
+              title="Zoom out"
+            >
+              <ZoomOut className="w-5 h-5" />
+            </button>
+            <span className="font-bold text-on-background min-w-[60px] text-center">
+              {Math.round(scale * 100)}%
+            </span>
+            <button
+              onClick={zoomIn}
+              className="p-2 brutal-border rounded-lg hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-transform bg-surface"
+              title="Zoom in"
+            >
+              <ZoomIn className="w-5 h-5" />
+            </button>
+            <span className="text-xs font-bold text-gray-500 ml-2">Ctrl+Scroll</span>
+          </div>
 
-      {/* PDF Viewer - Scrollable All Pages */}
-      <div ref={pdfScrollContainerRef} className="flex-1 overflow-auto flex justify-center p-8">
-        <div ref={pdfContainerRef} style={{ position: 'relative' }} className="flex flex-col gap-4">
-          <Document
-            file={pdfUrl}
-            onLoadSuccess={onDocumentLoadSuccess}
-            loading={
-              <div className="flex flex-col items-center gap-4 p-12 paper-card ambient-shadow">
-                <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
-                <p className="text-sm font-medium text-on-background/60">Loading PDF...</p>
-              </div>
-            }
-            error={
-              <div className="flex flex-col items-center gap-4 p-12 max-w-md text-center paper-card ambient-shadow">
-                <p className="text-sm font-medium text-red-600">Failed to load PDF</p>
-              </div>
-            }
-          >
-            {Array.from(new Array(numPages), (el, index) => (
-              <div 
-                key={`page_${index + 1}`} 
-                id={`pdf-page-${index + 1}`}
-                className="paper-card ambient-shadow mb-4 transition-all duration-300"
-              >
-                <Page
-                  pageNumber={index + 1}
-                  scale={scale}
-                  renderTextLayer={true}
-                  renderAnnotationLayer={true}
-                />
-                {/* Page number label */}
-                <div className="text-center py-2 text-xs text-on-background/40 font-medium">
-                  Page {index + 1}
-                </div>
-              </div>
-            ))}
-          </Document>
-          
-          {/* Tooltip */}
-          {tooltip.visible && (
-            <SelectionTooltip
-              x={tooltip.x}
-              y={tooltip.y}
-              sentence={tooltip.sentence}
-              explanation={tooltip.explanation}
-              analogy={tooltip.analogy}
-              relatedTerms={tooltip.relatedTerms}
-              loading={tooltip.loading}
-              showButton={tooltip.showButton}
-              onExplain={fetchExplanation}
-              onExplainMore={handleExplainMore}
-              onDismiss={dismiss}
-            />
+          {!isChatOpen && (
+            <button
+              onClick={() => setIsChatOpen(true)}
+              className="px-4 py-2 bg-primary text-white font-bold brutal-border brutal-shadow-sm hover:-translate-y-0.5 transition-transform flex items-center gap-2"
+            >
+              <MessageSquare className="w-4 h-4" /> AI Chat
+            </button>
           )}
         </div>
+
+        {/* PDF Viewer - Scrollable All Pages */}
+        <div ref={pdfScrollContainerRef} className="flex-1 overflow-auto flex justify-center p-8 bg-surface-dim">
+          <div ref={pdfContainerRef} style={{ position: 'relative' }} className="flex flex-col gap-8">
+            <Document
+              file={pdfUrl}
+              onLoadSuccess={onDocumentLoadSuccess}
+              loading={
+                <div className="flex flex-col items-center gap-4 p-12 bg-surface brutal-border brutal-shadow-sm rounded-xl">
+                  <div className="w-12 h-12 border-4 border-black border-t-primary rounded-full animate-spin" />
+                  <p className="font-bold">Loading PDF...</p>
+                </div>
+              }
+              error={
+                <div className="flex flex-col items-center gap-4 p-12 bg-surface brutal-border brutal-shadow-sm rounded-xl text-center">
+                  <p className="font-bold text-red-600">Failed to load PDF</p>
+                </div>
+              }
+            >
+              {Array.from(new Array(numPages), (el, index) => (
+                <div 
+                  key={`page_${index + 1}`} 
+                  id={`pdf-page-${index + 1}`}
+                  className="bg-white brutal-border mb-8 shadow-[8px_8px_0_0_rgba(0,0,0,1)] transition-transform relative"
+                >
+                  <Page
+                    pageNumber={index + 1}
+                    scale={scale}
+                    renderTextLayer={true}
+                    renderAnnotationLayer={true}
+                  />
+                  {/* Page number label */}
+                  <div className="absolute -left-12 top-0 h-full flex items-center justify-center -rotate-90 origin-center text-sm font-black text-gray-400 select-none">
+                    PAGE {index + 1}
+                  </div>
+                </div>
+              ))}
+            </Document>
+            
+            {/* Tooltip */}
+            {tooltip.visible && (
+              <SelectionTooltip
+                x={tooltip.x}
+                y={tooltip.y}
+                sentence={tooltip.sentence}
+                explanation={tooltip.explanation}
+                analogy={tooltip.analogy}
+                relatedTerms={tooltip.relatedTerms}
+                loading={tooltip.loading}
+                showButton={tooltip.showButton}
+                onExplain={fetchExplanation}
+                onExplainMore={handleExplainMore}
+                onDismiss={dismiss}
+              />
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Floating AI Chat - Draggable & Resizable */}
+      {/* 2. Contextual Tool Sidebar (AI Chat) */}
       {isChatOpen && (
-        <div
-          ref={chatRef}
-          className="fixed glass rounded-2xl ambient-shadow border border-white/20 flex flex-col overflow-hidden"
-          style={{
-            right: '24px',
-            top: '100px',
-            width: `${chatSize.width}px`,
-            height: `${chatSize.height}px`,
-            zIndex: 50,
-          }}
-        >
+        <div className="w-96 flex flex-col h-full bg-surface shrink-0 z-20">
           {/* Header */}
-          <div
-            className="flex items-center justify-between p-4 border-b border-outline-variant/10 bg-white/50 backdrop-blur-sm"
-          >
+          <div className="flex items-center justify-between p-4 border-b-2 border-black">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full primary-gradient flex items-center justify-center shadow-lg">
+              <div className="w-8 h-8 rounded-lg bg-primary brutal-border flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                 <MessageSquare className="w-4 h-4 text-white" />
               </div>
-              <span className="text-sm font-bold font-serif text-on-background">AI Assistant</span>
+              <span className="font-black text-lg">AI Assistant</span>
             </div>
             <button
               onClick={() => setIsChatOpen(false)}
-              className="w-6 h-6 rounded-lg hover:bg-surface-container transition-colors flex items-center justify-center"
+              className="w-8 h-8 rounded-lg border-2 border-transparent hover:border-black hover:bg-surface-dim transition-colors flex items-center justify-center font-bold"
             >
-              <X className="w-4 h-4 text-on-background/60" />
+              <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white/30 backdrop-blur-sm">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-surface-dim inner-shadow-brutal">
             {chatMessages.length === 0 ? (
-              <div className="text-center text-sm text-on-background/40 mt-8">
+              <div className="text-center font-bold text-gray-400 mt-8 p-4 border-2 border-dashed border-gray-300 rounded-xl">
                 Ask me anything about this paper
               </div>
             ) : (
               chatMessages.map((msg, idx) => (
                 <div
                   key={idx}
-                  className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={`flex flex-col gap-1 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
                 >
-                  {msg.role === 'assistant' && (
-                    <div className="w-6 h-6 rounded-full primary-gradient flex items-center justify-center shrink-0">
-                      <MessageSquare className="w-3 h-3 text-white" />
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2 text-xs font-bold text-gray-500 mb-1 px-1">
+                    {msg.role === 'user' ? 'You' : 'PaperLens'}
+                  </div>
                   <div
-                    className={`max-w-[80%] rounded-xl p-3 text-sm ${
+                    className={`max-w-[85%] rounded-xl p-3 text-sm font-medium brutal-border ${
                       msg.role === 'user'
-                        ? 'bg-primary text-white'
-                        : 'bg-white/80 text-on-background shadow-sm'
+                        ? 'bg-primary text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] rounded-tr-sm'
+                        : 'bg-white text-on-background shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] rounded-tl-sm'
                     }`}
                   >
                     {msg.content}
                     {msg.citations && msg.citations.length > 0 && (
-                      <div className="mt-2 flex gap-1 flex-wrap">
+                      <div className="mt-3 flex gap-2 flex-wrap">
                         {msg.citations.map((citation: CitedChunk, i: number) => {
-                          // Use actual page number from citation, fallback to section or index
                           const displayPage = citation.page ?? (citation.section ? `Section: ${citation.section}` : `Ref ${i + 1}`);
                           const scrollToPage = citation.page ?? 1;
                           
@@ -404,10 +402,10 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
                             <button
                               key={i}
                               onClick={() => handleCitationClick(scrollToPage)}
-                              className="text-[10px] px-2 py-1 rounded bg-primary/20 text-primary font-bold cursor-pointer hover:bg-primary/30 transition-colors"
+                              className="text-xs px-2 py-1 bg-surface-dim brutal-border hover:-translate-y-[1px] shadow-[1px_1px_0_0_black] transition-transform text-black font-bold"
                               title={`Page ${scrollToPage}: ${citation.text.substring(0, 100)}...`}
                             >
-                              [{i + 1}]
+                              Pg. {scrollToPage}
                             </button>
                           );
                         })}
@@ -418,26 +416,25 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
               ))
             )}
             {isSendingMessage && (
-              <div className="flex gap-3 justify-start">
-                <div className="w-6 h-6 rounded-full primary-gradient flex items-center justify-center shrink-0">
-                  <MessageSquare className="w-3 h-3 text-white" />
+              <div className="flex flex-col gap-1 items-start">
+                <div className="flex items-center gap-2 text-xs font-bold text-gray-500 mb-1 px-1">
+                  PaperLens
                 </div>
-                <div className="bg-white/80 rounded-xl p-3 shadow-sm">
-                  <div className="flex gap-1">
-                    <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="bg-white brutal-border rounded-xl rounded-tl-sm p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                  <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 bg-black rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <div className="w-2.5 h-2.5 bg-black rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <div className="w-2.5 h-2.5 bg-black rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                 </div>
               </div>
             )}
-            {/* Invisible element to scroll to */}
             <div ref={chatMessagesEndRef} />
           </div>
 
           {/* Input */}
-          <div className="p-4 border-t border-outline-variant/10 bg-white/50 backdrop-blur-sm">
-            <div className="flex gap-2">
+          <div className="p-4 border-t-2 border-black bg-surface">
+            <div className="flex relative">
               <input
                 type="text"
                 value={chatInput}
@@ -445,39 +442,19 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                 placeholder="Ask a question..."
                 disabled={isSendingMessage}
-                className="flex-1 bg-white border border-outline-variant/20 rounded-xl py-2 px-4 text-sm font-medium focus:ring-2 focus:ring-primary/20 outline-none disabled:opacity-50"
+                className="w-full bg-surface-dim brutal-border rounded-xl py-3 pl-4 pr-16 text-sm font-bold focus:outline-none focus:bg-white transition-colors disabled:opacity-50"
               />
               <button
                 onClick={handleSendMessage}
                 disabled={!chatInput.trim() || isSendingMessage}
-                className="px-4 py-2 primary-gradient text-white rounded-xl text-sm font-bold hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                className="absolute right-2 top-2 bottom-2 px-4 bg-primary text-white rounded-lg brutal-border shadow-[2px_2px_0px_0px_black] text-sm font-black hover:-translate-y-0.5 transition-transform disabled:opacity-50 disabled:hover:translate-y-0"
               >
                 Send
               </button>
             </div>
           </div>
-
-          {/* Resize Handle */}
-          <div
-            className="absolute bottom-2 right-2 w-6 h-6 cursor-nwse-resize flex items-center justify-center hover:bg-surface-container/50 rounded transition-colors"
-            onMouseDown={handleResizeStart}
-          >
-            <GripVertical className="w-4 h-4 text-on-background/30 rotate-45" />
-          </div>
         </div>
       )}
-
-      {/* Floating Button to Open Chat - Always Visible */}
-      <button
-        onClick={() => setIsChatOpen(true)}
-        className={cn(
-          "fixed bottom-8 right-8 w-14 h-14 rounded-full primary-gradient text-white shadow-2xl hover:scale-110 transition-all flex items-center justify-center z-[60]",
-          isChatOpen && "opacity-0 pointer-events-none"
-        )}
-        title="Open AI Assistant"
-      >
-        <MessageSquare className="w-6 h-6" />
-      </button>
     </div>
   );
 };

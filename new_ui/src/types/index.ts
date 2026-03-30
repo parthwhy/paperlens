@@ -26,14 +26,22 @@ export interface ConceptNode {
   id: string;
   label: string;
   description: string;
+  type?: 'method' | 'dataset' | 'metric' | 'concept';
+  explanation?: string;
+  key_equation?: string | null;
+  importance?: number;
+  frequency?: number;
   x?: number;
   y?: number;
+  vx?: number;
+  vy?: number;
 }
 
 export interface ConceptEdge {
   source: string;
   target: string;
   label?: string;
+  predicate?: string;
 }
 
 export interface ConceptMapData {
@@ -61,4 +69,13 @@ export interface AnimationJob {
   error?: string;
   video_url?: string;
   script_path?: string;
+}
+
+export interface PaperMetadata {
+  paper_id: string;
+  title: string;
+  authors: string[];
+  abstract: string;
+  ingested_at?: string;
+  message?: string;
 }

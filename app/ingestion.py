@@ -9,6 +9,8 @@ PaperIngestionService
 import pickle    
 import re
 import asyncio
+import sqlite3
+import datetime
 import arxiv
 import fitz                          # PyMuPDF
 import chromadb
@@ -39,6 +41,7 @@ class PaperIngestionService:
         self._pdf_cache_dir = Path("./pdf_cache")
         self._pdf_cache_dir.mkdir(exist_ok=True)
         logger.info(f"[INIT] PDF cache directory: {self._pdf_cache_dir}")
+        self._init_db()
         logger.info("[INIT] PaperIngestionService initialized successfully")
 
     # ── Public ────────────────────────────────────────────────────────────────
@@ -65,6 +68,15 @@ class PaperIngestionService:
         # 3. Embed + store in ChromaDB
         logger.info(f"[INGEST] Step 4/4: Generating embeddings and storing in ChromaDB...")
         self._store_chunks(paper_id, chunks)
+        
+        # 4. Save metadata to SQLite for history
+        logger.info(f"[INGEST] Step 5/5: Saving paper history to SQLite...")
+        self._save_paper_metadata(
+            paper_id=paper_id,
+            title=paper.title,
+            authors=[str(a) for a in paper.authors],
+            abstract=paper.summary
+        )
         logger.info(f"[INGEST] Ingestion complete for {paper_id}")
 
         return IngestResponse(
@@ -87,7 +99,49 @@ class PaperIngestionService:
         except Exception:
             return False
 
+    def get_recent_papers(self, limit: int = 20):
+        """Fetch recent papers from the SQLite history."""
+        cursor = self.conn.cursor()
+        cursor.execute('SELECT * FROM papers ORDER BY ingested_at DESC LIMIT ?', (limit,))
+        rows = cursor.fetchall()
+        return [dict(row) for row in rows]
+
+    def get_paper_metadata(self, paper_id: str):
+        """Fetch specific paper metadata from SQLite."""
+        cursor = self.conn.cursor()
+        cursor.execute('SELECT * FROM papers WHERE paper_id = ?', (paper_id,))
+        row = cursor.fetchone()
+        return dict(row) if row else None
+
     # ── Private ───────────────────────────────────────────────────────────────
+
+    def _init_db(self):
+        """Initialize SQLite DB for storing ingested paper history."""
+        db_path = Path(settings.chroma_persist_dir) / "papers.db"
+        self.conn = sqlite3.connect(db_path, check_same_thread=False)
+        self.conn.row_factory = sqlite3.Row
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS papers (
+                paper_id TEXT PRIMARY KEY,
+                title TEXT,
+                authors TEXT,
+                abstract TEXT,
+                ingested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        self.conn.commit()
+        logger.info(f"[INIT] SQLite DB initialized at {db_path}")
+
+    def _save_paper_metadata(self, paper_id: str, title: str, authors: list, abstract: str):
+        """Save successfully ingested paper metadata to SQLite history."""
+        authors_str = ", ".join(authors) if isinstance(authors, list) else authors
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            INSERT OR REPLACE INTO papers (paper_id, title, authors, abstract, ingested_at)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (paper_id, title, authors_str, abstract, datetime.datetime.now().isoformat()))
+        self.conn.commit()
 
     def _extract_arxiv_id(self, url: str) -> str:
         """Extract clean arxiv ID from various URL formats."""

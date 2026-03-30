@@ -44,47 +44,30 @@ Schema:
       "label": "Human readable name",
       "type": "method|dataset|metric|concept",
       "explanation": "What it is and how it works in 2-3 sentences. Be precise — mention inputs, outputs, and the core mechanism.",
-      "key_equation": "LaTeX string of the central formula if one exists, else null. E.g. \\\\frac{QK^T}{\\\\sqrt{d_k}}",
-      "visual_hint": {
-        "metaphor": "One-sentence spatial metaphor that captures the mechanism. E.g: 'A query token casting light beams of varying brightness onto every other token, where brightness encodes relevance'",
-        "objects": [
-          {
-            "name": "python_var_name",
-            "shape": "Circle|Rectangle|Arrow|Text|MathTex|Line|Dot",
-            "label": "text shown on screen",
-            "role": "what this object represents in the concept"
-          }
-        ],
-        "steps": [
-          "Step 1: Show title text at top of screen",
-          "Step 2: Create three circles labeled Q, K, V arranged left to right",
-          "Step 3: Draw arrows from Q to each K with varying thickness showing scores",
-          "Step 4: Display formula below using MathTex",
-          "Step 5: Highlight the attended token by scaling it up and changing color to yellow"
-        ],
-        "layout": "horizontal|vertical|radial|grid|layered",
-        "color_logic": "Describe color meaning. E.g: blue=input tokens, orange=output, yellow=attended/active, gray=inactive, size=importance"
-      },
+      "key_equation": "LaTeX string of the central formula if one exists, else null",
+      "visual_hint": "A one-sentence description of how to animate this concept. E.g: 'Show query vectors casting attention beams onto key vectors with varying brightness'",
+      "importance": 5,
       "frequency": 7
     }
   ],
   "edges": [
     {
       "source": "concept_id",
-      "predicate": "extends|uses|evaluates_on|introduces|contrasts|outperforms",
+      "predicate": "extends|uses|evaluates_on|introduces|contrasts|outperforms|part_of|enables",
       "target": "concept_id"
     }
   ]
 }
 
 Rules:
-- Extract 15-25 most important concepts only
-- visual_hint.steps must be 4-6 concrete animation steps, specific enough to write Manim code from WITHOUT reading the paper
-- Each step in visual_hint.steps must name the exact Manim object type (Circle, Arrow, MathTex, Text, Rectangle, VGroup)
-- key_equation must be valid LaTeX with double-escaped backslashes, or null
+- Extract the 8-12 MOST IMPORTANT concepts only. Quality over quantity.
+- importance: integer 1-10 indicating how central this concept is to the paper
+- visual_hint must be a single string (not an object), max 1 sentence
+- key_equation must be valid LaTeX or null
 - type must be exactly one of: method, dataset, metric, concept
-- All edge source/target must match an id in concepts list
-- Only add edges where relationship is explicitly stated in the paper"""
+- All edge source/target must reference an id in the concepts list
+- Only add edges where relationship is explicitly stated in the paper
+- Keep total response under 3000 tokens"""
 
 
 PLANNER_SYSTEM_PROMPT = """You are an expert at converting research paper concepts into structured Manim animation storyboards.
@@ -513,7 +496,7 @@ class ManimService:
                     }
                 ],
                 temperature=0.1,
-                max_tokens=8000,  # Increased from 4000 to avoid truncation
+                max_tokens=4000,
                 response_format={"type": "json_object"},
             )
 
@@ -532,7 +515,6 @@ class ManimService:
                 logger.warning(f"[ANALYSIS] Raw response length: {len(raw)} chars")
                 
                 # Attempt to repair truncated JSON
-                # Common issue: response cut off mid-string or mid-array
                 raw_repaired = raw
                 
                 # If ends with incomplete string, close it
@@ -551,10 +533,26 @@ class ManimService:
                     result = json.loads(raw_repaired)
                     logger.info(f"[ANALYSIS] JSON repaired successfully")
                 except json.JSONDecodeError:
-                    # Last resort: save raw output for debugging
-                    logger.error(f"[ANALYSIS] JSON repair failed. First 500 chars: {raw[:500]}")
-                    logger.error(f"[ANALYSIS] Last 500 chars: {raw[-500:]}")
-                    raise json_err
+                    # Last resort: extract individual concept objects via regex
+                    logger.warning("[ANALYSIS] JSON repair failed, extracting partial concepts via regex")
+                    concept_pattern = re.compile(
+                        r'\{\s*"id"\s*:\s*"[^"]+"\s*,\s*"label"\s*:\s*"[^"]+"\s*,\s*"type"\s*:\s*"[^"]+"\s*,\s*"explanation"\s*:\s*"[^"]*"[^}]*\}',
+                        re.DOTALL
+                    )
+                    matches = concept_pattern.findall(raw)
+                    parsed_concepts = []
+                    for m in matches:
+                        try:
+                            parsed_concepts.append(json.loads(m))
+                        except json.JSONDecodeError:
+                            continue
+                    
+                    if parsed_concepts:
+                        result = {"concepts": parsed_concepts, "edges": []}
+                        logger.info(f"[ANALYSIS] Extracted {len(parsed_concepts)} concepts via regex fallback")
+                    else:
+                        logger.error(f"[ANALYSIS] All repair attempts failed. First 500 chars: {raw[:500]}")
+                        raise json_err
             
             self._paper_analysis_cache[paper_id] = result
             logger.info(

@@ -120,6 +120,20 @@ async def ingest_paper(request: IngestRequest, background_tasks: BackgroundTasks
     return {"job_id": job_id, "status": "processing"}
 
 
+@router.get("/papers", tags=["Paper"])
+async def get_recent_papers(limit: int = 20):
+    """
+    Get a list of recently ingested papers.
+    Used for the homepage 'Famous Papers' and 'Recent Papers' section.
+    """
+    try:
+        papers = _ingestion.get_recent_papers(limit)
+        return {"papers": papers}
+    except Exception as e:
+        logger.error(f"Error fetching recent papers: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch recent papers")
+
+
 @router.get("/paper/{paper_id}", tags=["Paper"])
 async def get_paper_details(paper_id: str):
     """
@@ -130,11 +144,18 @@ async def get_paper_details(paper_id: str):
         raise HTTPException(status_code=404, detail="Paper not found. Ingest it first.")
     
     try:
-        # Get paper metadata from ChromaDB collection
-        collection = _ingestion.chroma_client.get_collection(name=paper_id)
-        
-        # Get metadata from collection (stored during ingestion)
-        # We'll need to fetch from arXiv API again since we don't store full metadata
+        # Check if we have it in our new SQLite cache first
+        metadata = _ingestion.get_paper_metadata(paper_id)
+        if metadata:
+            return {
+                "paper_id": metadata["paper_id"],
+                "title": metadata["title"],
+                "authors": [a.strip() for a in metadata["authors"].split(",") if a.strip()],
+                "abstract": metadata["abstract"],
+                "message": "Paper found"
+            }
+            
+        # Fallback to arXiv API if not in SQLite (e.g., ingested before SQLite was added)
         from arxiv import Search
         search = Search(id_list=[paper_id])
         paper = next(search.results())
@@ -144,8 +165,7 @@ async def get_paper_details(paper_id: str):
             "title": paper.title,
             "authors": [str(a) for a in paper.authors],
             "abstract": paper.summary,
-            "total_chunks": collection.count(),
-            "message": "Paper found"
+            "message": "Paper found (fetched from arXiv fallback)"
         }
     except Exception as e:
         logger.error(f"Error fetching paper details: {e}")
