@@ -1,115 +1,207 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Work+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 
-@theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-
-  --color-background: var(--color-bg-base);
-  --color-on-background: var(--color-text-base);
-  
-  --color-surface: var(--color-surface-base);
-  --color-surface-dim: var(--color-surface-dim-base);
-  --color-surface-container: var(--color-surface-container-base);
-  --color-surface-muted: var(--color-surface-muted-base);
-  
-  --color-primary: var(--color-primary-base);
-  --color-primary-hover: var(--color-primary-hover-base);
-  --color-primary-container: var(--color-primary-container-base);
-  --color-on-primary: var(--color-on-primary-base);
-
-  --color-secondary: var(--color-secondary-base);
-  --color-tertiary: var(--color-tertiary-base);
-  
-  --color-success: #059669;
-  --color-warning: #d97706;
-  --color-danger: #dc2626;
-
-  --color-border: var(--color-border-base);
-}
-
+/* ═══════════════════════════════════════════════════════
+   STITCH DESIGN SYSTEM: Soft Neo-Brutalist Tokens
+   ═══════════════════════════════════════════════════════ */
 :root {
-  --color-bg-base: #f9f9f6;
-  --color-text-base: #1a1c1b;
-  --color-surface-base: #ffffff;
-  --color-surface-dim-base: #dadad7;
-  --color-surface-container-base: #eeeeeb;
-  --color-surface-muted-base: #f4f4f1;
-  --color-primary-base: #785a00;
-  --color-primary-hover-base: #5b4300;
-  --color-primary-container-base: #ffd166;
-  --color-on-primary-base: #ffffff;
-  --color-secondary-base: #006c4f;
-  --color-tertiary-base: #792ae2;
-  --color-border-base: #1a1c1b;
+  /* ── Surface & Background ── */
+  --surface: #f9f9f6;
+  --surface-container: #eeeeeb;
+  --surface-container-low: #f4f4f1;
+  --surface-container-high: #e8e8e5;
+  --surface-container-highest: #e2e3e0;
+  --surface-container-lowest: #ffffff;
+  --surface-dim: #dadad7;
+  --surface-bright: #f9f9f6;
+  --surface-variant: #e2e3e0;
+  --background: #f9f9f6;
+  --on-background: #1a1c1b;
+  --on-surface: #1a1c1b;
+  --on-surface-variant: #4e4636;
+
+  /* ── Primary (Amber) ── */
+  --primary: #785a00;
+  --primary-container: #ffd166;
+  --primary-fixed: #ffdf9b;
+  --primary-fixed-dim: #edc157;
+  --on-primary: #ffffff;
+  --on-primary-container: #765900;
+  --on-primary-fixed: #251a00;
+  --on-primary-fixed-variant: #5b4300;
+
+  /* ── Secondary (Mint/emerald) ── */
+  --secondary: #006c4f;
+  --secondary-container: #51fac1;
+  --secondary-fixed: #54fdc4;
+  --secondary-fixed-dim: #27e0a9;
+  --on-secondary: #ffffff;
+  --on-secondary-container: #007152;
+  --on-secondary-fixed: #002116;
+  --on-secondary-fixed-variant: #00513b;
+
+  /* ── Tertiary (Purple / AI) ── */
+  --tertiary: #792ae2;
+  --tertiary-container: #e3ceff;
+  --tertiary-fixed: #ecdcff;
+  --tertiary-fixed-dim: #d5baff;
+  --on-tertiary: #ffffff;
+  --on-tertiary-container: #7828e1;
+  --on-tertiary-fixed: #270057;
+  --on-tertiary-fixed-variant: #5f00c0;
+
+  /* ── Error ── */
+  --error: #ba1a1a;
+  --error-container: #ffdad6;
+  --on-error: #ffffff;
+  --on-error-container: #93000a;
+
+  /* ── Outline ── */
+  --outline: #807664;
+  --outline-variant: #d1c5b1;
+
+  /* ── Inverse ── */
+  --inverse-surface: #2f312f;
+  --inverse-on-surface: #f1f1ee;
+  --inverse-primary: #edc157;
+
+  /* ── Ink (signature brutalist line) ── */
+  --ink: #1A1A1A;
+  --paper: #FAFAF7;
+
+  /* ── Typography ── */
+  --font-headline: 'Newsreader', serif;
+  --font-body: 'Work Sans', sans-serif;
+  --font-label: 'Space Grotesk', monospace;
+
+  /* ── Shadows ── */
+  --shadow-neo: 4px 4px 0px 0px var(--ink);
+  --shadow-neo-sm: 2px 2px 0px 0px var(--ink);
+  --shadow-neo-lg: 8px 8px 0px 0px var(--ink);
 }
 
-.dark {
-  --color-bg-base: #121212;
-  --color-text-base: #e2e3e0;
-  --color-surface-base: #1e1e1e;
-  --color-surface-dim-base: #2a2a2a;
-  --color-surface-container-base: #242424;
-  --color-surface-muted-base: #2f2f2f;
-  --color-primary-base: #ffd166;
-  --color-primary-hover-base: #edc157;
-  --color-primary-container-base: #785a00;
-  --color-on-primary-base: #1a1c1b;
-  --color-secondary-base: #54fdc4;
-  --color-tertiary-base: #d5baff;
-  --color-border-base: #e2e3e0;
+/* ═══════════════════════════════════════════════════════
+   GLOBAL RESET & BASE
+   ═══════════════════════════════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@layer base {
-  body {
-    @apply bg-background text-on-background font-sans antialiased;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-  }
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
-/* ── Utility classes ──────────────────────────────────────────────────── */
+body {
+  font-family: var(--font-body);
+  background-color: var(--background);
+  color: var(--on-surface);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
+::selection {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TYPOGRAPHY UTILITIES
+   ═══════════════════════════════════════════════════════ */
+.font-headline { font-family: var(--font-headline); }
+.font-body     { font-family: var(--font-body); }
+.font-label    { font-family: var(--font-label); }
+
+/* ═══════════════════════════════════════════════════════
+   NEO-BRUTALIST UTILITIES
+   ═══════════════════════════════════════════════════════ */
+.neo-border { border: 2px solid var(--ink); }
+.neo-shadow { box-shadow: var(--shadow-neo); }
+.neo-shadow-sm { box-shadow: var(--shadow-neo-sm); }
+.neo-shadow-lg { box-shadow: var(--shadow-neo-lg); }
+
+.hover-lift {
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.hover-lift:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px var(--ink);
+}
+.active-press:active {
+  transform: translate(2px, 2px);
+  box-shadow: var(--shadow-neo-sm);
+}
+
+/* ═══════════════════════════════════════════════════════
+   SCROLLBAR
+   ═══════════════════════════════════════════════════════ */
+.custom-scrollbar::-webkit-scrollbar { width: 8px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--outline-variant);
+  border-radius: 10px;
+  border: 2px solid var(--surface);
+}
+
+/* ═══════════════════════════════════════════════════════
+   DOT GRID BACKGROUND
+   ═══════════════════════════════════════════════════════ */
 .dot-grid {
-  background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px);
-  background-size: 20px 20px;
-}
-
-.bg-grid-pattern {
+  background-image: radial-gradient(var(--ink) 1px, transparent 1px);
   background-size: 40px 40px;
-  background-image: 
-    linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
+  opacity: 0.08;
 }
 
-.bg-plus-pattern {
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+/* ═══════════════════════════════════════════════════════
+   GRAPH LINES (SVG)
+   ═══════════════════════════════════════════════════════ */
+.graph-line {
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-dasharray: 4 4;
 }
 
-/* ── Scrollbar ────────────────────────────────────────────────────────── */
-
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { @apply bg-surface-muted rounded-full; }
-::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.2); }
-
-/* ── Transitions ──────────────────────────────────────────────────────── */
-
-.fade-in {
-  animation: fadeIn 0.3s ease-out;
+/* ═══════════════════════════════════════════════════════
+   GLASS OVERLAY
+   ═══════════════════════════════════════════════════════ */
+.glass-overlay {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
 }
 
-@keyframes fadeIn {
+/* ═══════════════════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════════════════ */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
+@keyframes fade-in {
   from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
+.animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
 
-.shimmer {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
 }
+.animate-slide-in-right { animation: slide-in-right 0.3s ease-out forwards; }
 
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+/* ═══════════════════════════════════════════════════════
+   INPUT FOCUS         
+   ═══════════════════════════════════════════════════════ */
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 6px 6px 0px 0px var(--ink);
 }

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PaperLens | Academic Authority with a Human Pulse</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Work+Sans:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-surface-variant": "#4e4636",
+                        "outline": "#807664",
+                        "surface-container-low": "#f4f4f1",
+                        "surface-container-high": "#e8e8e5",
+                        "primary": "#785a00",
+                        "on-background": "#1a1c1b",
+                        "surface-dim": "#dadad7",
+                        "inverse-on-surface": "#f1f1ee",
+                        "surface-tint": "#785a00",
+                        "error": "#ba1a1a",
+                        "background": "#f9f9f6",
+                        "primary-fixed-dim": "#edc157",
+                        "on-surface": "#1a1c1b",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#251a00",
+                        "tertiary-container": "#e3ceff",
+                        "error-container": "#ffdad6",
+                        "on-secondary-container": "#007152",
+                        "on-secondary-fixed-variant": "#00513b",
+                        "secondary-fixed": "#54fdc4",
+                        "tertiary-fixed-dim": "#d5baff",
+                        "on-tertiary-fixed-variant": "#5f00c0",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#d1c5b1",
+                        "secondary-fixed-dim": "#27e0a9",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#eeeeeb",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#ecdcff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#002116",
+                        "on-tertiary-container": "#7828e1",
+                        "surface-variant": "#e2e3e0",
+                        "on-primary-container": "#765900",
+                        "surface": "#f9f9f6",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2f312f",
+                        "surface-bright": "#f9f9f6",
+                        "secondary-container": "#51fac1",
+                        "secondary": "#006c4f",
+                        "on-tertiary-fixed": "#270057",
+                        "primary-container": "#ffd166",
+                        "tertiary": "#792ae2",
+                        "on-primary-fixed-variant": "#5b4300",
+                        "surface-container-highest": "#e2e3e0",
+                        "primary-fixed": "#ffdf9b",
+                        "inverse-primary": "#edc157"
+                    },
+                    fontFamily: {
+                        "headline": ["Newsreader", "serif"],
+                        "body": ["Work Sans", "sans-serif"],
+                        "label": ["Space Grotesk", "monospace"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f9f9f6;
+            color: #1a1c1b;
+            font-family: 'Work Sans', sans-serif;
+            line-height: 1.7;
+        }
+        .neo-shadow {
+            box-shadow: 4px 4px 0px 0px #1a1c1b;
+        }
+        .neo-shadow-sm {
+            box-shadow: 2px 2px 0px 0px #1a1c1b;
+        }
+        .neo-shadow-lg {
+            box-shadow: 8px 8px 0px 0px #1a1c1b;
+        }
+        .hover-lift:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #1a1c1b;
+        }
+        .active-press:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px #1a1c1b;
+        }
+    </style>
+</head>
+<body class="selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-[#FAFAF7] border-b-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_rgba(26,26,26,1)]">
+<nav class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-3">
+<span class="text-2xl font-black text-[#1A1A1A] font-['Newsreader'] flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">magnification_small</span>
+                    PaperLens
+                </span>
+<span class="bg-primary-container text-on-primary-container font-label text-[10px] px-2 py-0.5 border border-on-surface rounded-full uppercase tracking-tighter font-bold">beta</span>
+</div>
+<div class="hidden md:flex items-center gap-8 font-label uppercase text-sm tracking-widest">
+<a class="text-[#1A1A1A] opacity-80 hover:opacity-100 transition-opacity" href="#">How it works</a>
+<a class="text-[#1A1A1A] opacity-80 hover:opacity-100 transition-opacity" href="#">Features</a>
+<a class="text-[#1A1A1A] opacity-80 hover:opacity-100 transition-opacity" href="#">GitHub</a>
+</div>
+<button class="bg-[#1A1A1A] text-[#FAFAF7] font-label px-6 py-2.5 rounded-lg neo-shadow-sm hover:translate-y-[-2px] hover:shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] transition-all active:translate-y-[2px] active:shadow-none uppercase text-sm font-bold">
+                Try it now
+            </button>
+</nav>
+</header>
+<main class="pt-32 pb-20">
+<!-- Hero Section -->
+<section class="max-w-7xl mx-auto px-6 text-center relative">
+<div class="mb-12">
+<h1 class="font-headline text-6xl md:text-8xl font-extrabold tracking-tight leading-[0.9] text-on-surface mb-8">
+                    Read research papers without <span class="text-primary italic">the confusion</span>
+</h1>
+<p class="max-w-2xl mx-auto text-xl text-on-surface-variant font-body mb-10">
+                    Paste any arXiv link. Hover sentences for instant explanations. Ask questions. Watch concepts animate in real-time.
+                </p>
+<!-- Search/Input Bar -->
+<div class="max-w-3xl mx-auto flex flex-col md:flex-row gap-4">
+<div class="flex-1 relative">
+<input class="w-full h-16 px-6 bg-surface-container-lowest border-2 border-on-surface rounded-xl font-label text-lg focus:ring-0 focus:border-primary neo-shadow transition-all placeholder:opacity-50" placeholder="https://arxiv.org/abs/..." type="text"/>
+</div>
+<button class="h-16 px-8 bg-primary-container text-on-surface border-2 border-on-surface rounded-xl font-label font-bold text-lg neo-shadow hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(26,26,26,1)] transition-all active:translate-y-[2px] flex items-center justify-center gap-2">
+                        Analyse Paper <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Floating Mockups (Desktop Only) -->
+<div class="hidden lg:block relative h-96 mt-20">
+<!-- Card 1: Sentence Hover -->
+<div class="absolute top-0 left-0 w-80 p-6 bg-surface-container-lowest border-2 border-on-surface rounded-xl neo-shadow rotate-[-2deg] hover:rotate-0 transition-transform cursor-default">
+<div class="flex items-center gap-2 mb-4">
+<span class="w-3 h-3 rounded-full bg-error"></span>
+<span class="w-3 h-3 rounded-full bg-primary-container"></span>
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+</div>
+<p class="text-xs font-body leading-relaxed text-left">
+                        "...we utilize a <span class="bg-secondary/20 border-b-2 border-secondary font-medium px-0.5">Transformer-based architecture</span> with integrated attention mechanisms..."
+                    </p>
+<div class="mt-4 p-3 bg-secondary text-on-secondary rounded-lg text-xs font-label text-left relative">
+                        Think of this as a brain that can focus on specific words while ignoring others to understand context better.
+                        <div class="absolute -top-2 left-4 w-4 h-4 bg-secondary rotate-45"></div>
+</div>
+</div>
+<!-- Card 2: AI Chat -->
+<div class="absolute top-20 right-0 w-72 p-6 bg-surface-container-lowest border-2 border-on-surface rounded-xl neo-shadow rotate-[3deg] hover:rotate-0 transition-transform cursor-default">
+<div class="flex items-center justify-between mb-4 border-b border-outline-variant pb-2">
+<span class="font-label text-xs font-bold uppercase tracking-widest">AI Assistant</span>
+<span class="material-symbols-outlined text-tertiary text-sm">bolt</span>
+</div>
+<div class="space-y-3">
+<div class="bg-surface-container p-2 rounded text-[10px] text-left opacity-70">How does the loss function work?</div>
+<div class="bg-tertiary-container text-on-tertiary-container p-2 rounded text-[10px] text-left border border-tertiary/20">It measures the distance between predicted and actual values using Cross-Entropy.</div>
+</div>
+</div>
+<!-- Card 3: Concept Graph -->
+<div class="absolute -bottom-10 left-1/3 w-64 p-4 bg-surface-container-lowest border-2 border-on-surface rounded-xl neo-shadow transition-transform cursor-default">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-sm">hub</span>
+<span class="font-label text-[10px] font-bold">CONCEPT MAP</span>
+</div>
+<div class="h-32 bg-surface-container-low rounded-lg flex items-center justify-center overflow-hidden">
+<div class="relative w-full h-full p-4">
+<div class="absolute top-4 left-4 w-12 h-12 rounded-full border border-on-surface bg-primary-container flex items-center justify-center text-[8px] font-bold">Input</div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border-2 border-on-surface bg-white flex items-center justify-center text-[10px] font-bold">Model</div>
+<div class="absolute bottom-4 right-4 w-12 h-12 rounded-full border border-on-surface bg-secondary-container flex items-center justify-center text-[8px] font-bold">Output</div>
+<svg class="absolute inset-0 w-full h-full pointer-events-none opacity-40">
+<line stroke="black" stroke-width="1" x1="40" x2="128" y1="40" y2="128"></line>
+<line stroke="black" stroke-width="1" x1="128" x2="210" y1="128" y2="210"></line>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Bento Grid -->
+<section class="max-w-7xl mx-auto px-6 mt-32">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Feature 1 -->
+<div class="md:col-span-7 bg-surface-container-lowest border-2 border-on-surface rounded-xl p-10 neo-shadow overflow-hidden group">
+<div class="flex flex-col h-full">
+<span class="font-label text-sm font-bold text-secondary mb-4 uppercase tracking-tighter">Annotated Intelligence</span>
+<h2 class="font-headline text-4xl font-bold mb-6">AI that <span class="text-primary italic">reads the paper</span> with you</h2>
+<p class="text-on-surface-variant mb-12 max-w-md">No more switching tabs to Wikipedia. Get instant definitions and context directly over the text.</p>
+<div class="mt-auto relative">
+<div class="bg-surface p-6 border-2 border-on-surface rounded-xl neo-shadow-sm transform group-hover:translate-x-2 transition-transform">
+<p class="text-sm font-body italic">"The <span class="bg-primary-container/30 border-b-2 border-primary">backpropagation algorithm</span> was used to update weights..."</p>
+<div class="mt-4 p-4 bg-white border border-on-surface-variant/20 rounded shadow-sm text-xs">
+<strong class="text-primary">Context:</strong> Backpropagation is like a "correction" signal sent back through the network to fix errors.
+                                </div>
+</div>
+</div>
+</div>
+</div>
+<!-- Feature 2 -->
+<div class="md:col-span-5 bg-tertiary text-on-tertiary border-2 border-on-surface rounded-xl p-10 neo-shadow flex flex-col justify-between">
+<div>
+<span class="font-label text-sm font-bold mb-4 uppercase tracking-widest opacity-80">Interactive Dialogue</span>
+<h2 class="font-headline text-4xl font-bold mb-6 text-white">Ask <span class="italic text-tertiary-fixed">anything</span></h2>
+</div>
+<div class="space-y-4">
+<div class="bg-white/10 p-4 rounded-lg border border-white/20">
+<p class="text-sm font-body">"Can you explain the results section like I'm an undergraduate?"</p>
+</div>
+<div class="bg-white/20 p-4 rounded-lg border border-white/40">
+<p class="text-sm font-body">"Certainly. In short: they found that the more data they added, the lower the error, but only up to a point..."</p>
+</div>
+</div>
+</div>
+<!-- Feature 3 -->
+<div class="md:col-span-12 bg-secondary-container text-on-secondary-container border-2 border-on-surface rounded-xl p-10 neo-shadow relative overflow-hidden">
+<div class="md:flex items-center justify-between gap-12 relative z-10">
+<div class="max-w-xl">
+<span class="font-label text-sm font-bold mb-4 uppercase tracking-widest text-secondary">Visual Synthesis</span>
+<h2 class="font-headline text-5xl font-bold mb-6">One paper, <span class="italic">infinite insights</span></h2>
+<p class="text-lg opacity-90">Watch static text transform into living diagrams. Our engine parses methodology into logical flowcharts automatically.</p>
+<button class="mt-8 px-6 py-3 bg-on-surface text-surface rounded-lg font-label uppercase text-sm font-bold neo-shadow-sm hover-lift">Explore Visual Mode</button>
+</div>
+<div class="hidden md:block w-96 h-64 bg-surface rounded-2xl border-2 border-on-surface neo-shadow-lg relative overflow-hidden">
+<img class="w-full h-full object-cover opacity-80" data-alt="abstract mathematical visualization with glowing nodes and connecting lines on a dark technical background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFExYaK6jQ80esFdgXI-kGhHaqqhStaTv_ABXowFiU_A3nP1aCsFBWatWGWTHga-E4O-Vr09_p69gF0DwhgDsBLrrAiht_0iT8_N2ly9yVm7ieLEtv36QVA5uMKFkaVL25D-_o-tt9L_cGKhnzjQzSF8q4IUw2trH_PkX6NdM--bGvqrC3UI4ufS6elhOhmyBmqkp-8XZ95jOHuH2ZY7KCtZTVoXUsGL3ocKP2N-lu1f1DQheyvwjaIEs04z1ifhDr0wH4UkHAXA"/>
+<div class="absolute inset-0 bg-secondary/10 mix-blend-multiply"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- How It Works -->
+<section class="max-w-7xl mx-auto px-6 mt-40">
+<div class="text-center mb-16">
+<h2 class="font-headline text-5xl font-extrabold mb-4">How it works</h2>
+<div class="w-24 h-2 bg-primary mx-auto"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+<!-- Step 01 -->
+<div class="bg-surface-container-lowest border-2 border-on-surface rounded-xl p-8 neo-shadow relative">
+<span class="font-label text-6xl font-black text-on-surface/10 absolute top-4 right-6 italic">01</span>
+<div class="w-12 h-12 bg-primary-container rounded-lg border-2 border-on-surface flex items-center justify-center mb-6 neo-shadow-sm">
+<span class="material-symbols-outlined text-on-surface">link</span>
+</div>
+<h3 class="font-headline text-2xl font-bold mb-4">Paste URL</h3>
+<p class="text-on-surface-variant text-sm">Drop any arXiv or research link. We'll fetch the full text and process the citations immediately.</p>
+</div>
+<!-- Step 02 -->
+<div class="bg-surface-container-lowest border-2 border-on-surface rounded-xl p-8 neo-shadow relative">
+<span class="font-label text-6xl font-black text-on-surface/10 absolute top-4 right-6 italic">02</span>
+<div class="w-12 h-12 bg-secondary-container rounded-lg border-2 border-on-surface flex items-center justify-center mb-6 neo-shadow-sm">
+<span class="material-symbols-outlined text-on-surface">psychology</span>
+</div>
+<h3 class="font-headline text-2xl font-bold mb-4">Analyze context</h3>
+<p class="text-on-surface-variant text-sm">Our AI reads through the paper, identifies key concepts, and generates plain-english annotations for every section.</p>
+</div>
+<!-- Step 03 -->
+<div class="bg-surface-container-lowest border-2 border-on-surface rounded-xl p-8 neo-shadow relative">
+<span class="font-label text-6xl font-black text-on-surface/10 absolute top-4 right-6 italic">03</span>
+<div class="w-12 h-12 bg-tertiary-container rounded-lg border-2 border-on-surface flex items-center justify-center mb-6 neo-shadow-sm">
+<span class="material-symbols-outlined text-on-surface">auto_awesome</span>
+</div>
+<h3 class="font-headline text-2xl font-bold mb-4">Deep Focus</h3>
+<p class="text-on-surface-variant text-sm">Read without friction. Use the chat, hover for definitions, and see concepts visualized as you go.</p>
+</div>
+</div>
+</section>
+<!-- Famous Papers & Recently Processed -->
+<section class="max-w-7xl mx-auto px-6 mt-40">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+<!-- Famous Papers -->
+<div>
+<div class="flex items-center gap-2 mb-8">
+<span class="material-symbols-outlined text-tertiary fill-1">star</span>
+<h2 class="font-headline text-3xl font-extrabold uppercase tracking-tight">Famous Papers</h2>
+</div>
+<div class="space-y-6">
+<!-- Card 1 -->
+<a class="block bg-surface-container-lowest border-2 border-on-surface rounded-xl p-6 neo-shadow-sm hover:translate-y-[-2px] hover:shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] transition-all group" href="#">
+<div class="flex justify-between items-start gap-4">
+<div>
+<h4 class="font-headline text-xl font-bold text-tertiary mb-1">Attention Is All You Need</h4>
+<p class="text-sm text-on-surface-variant font-body">Ashish Vaswani, Noam Shazeer, Niki Parmar, et al.</p>
+</div>
+<span class="material-symbols-outlined text-on-surface group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+<!-- Card 2 -->
+<a class="block bg-surface-container-lowest border-2 border-on-surface rounded-xl p-6 neo-shadow-sm hover:translate-y-[-2px] hover:shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] transition-all group" href="#">
+<div class="flex justify-between items-start gap-4">
+<div>
+<h4 class="font-headline text-xl font-bold text-on-surface mb-1">Deep Residual Learning for Image Recognition</h4>
+<p class="text-sm text-on-surface-variant font-body">Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun</p>
+</div>
+<span class="material-symbols-outlined text-on-surface group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+<!-- Card 3 -->
+<a class="block bg-surface-container-lowest border-2 border-on-surface rounded-xl p-6 neo-shadow-sm hover:translate-y-[-2px] hover:shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] transition-all group" href="#">
+<div class="flex justify-between items-start gap-4">
+<div>
+<h4 class="font-headline text-xl font-bold text-on-surface mb-1">Language Models are Few-Shot Learners (GPT-3)</h4>
+<p class="text-sm text-on-surface-variant font-body">Tom B. Brown, Benjamin Mann, Nick Ryder, et al.</p>
+</div>
+<span class="material-symbols-outlined text-on-surface group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</a>
+</div>
+</div>
+<!-- Recently Processed -->
+<div>
+<div class="flex items-center gap-2 mb-8">
+<span class="material-symbols-outlined text-tertiary">schedule</span>
+<h2 class="font-headline text-3xl font-extrabold uppercase tracking-tight">Recently Processed</h2>
+</div>
+<div class="h-[384px] bg-surface-container border-2 border-on-surface border-dashed rounded-3xl flex flex-col items-center justify-center p-12 text-center neo-shadow-sm">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant mb-4 opacity-30">history</span>
+<p class="text-on-surface-variant font-body text-lg max-w-[280px]">No recent papers found. Be the first to ingest one!</p>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="max-w-7xl mx-auto px-6 mt-40 mb-20">
+<div class="bg-primary-container border-2 border-on-surface rounded-3xl p-12 md:p-20 text-center neo-shadow-lg relative overflow-hidden">
+<div class="relative z-10">
+<h2 class="font-headline text-5xl md:text-7xl font-extrabold mb-8 max-w-4xl mx-auto">
+                        Start reading smarter <span class="italic text-primary underline decoration-on-surface underline-offset-8">today</span>
+</h2>
+<p class="text-xl text-on-surface/80 font-body mb-12 max-w-xl mx-auto">
+                        Join 10,000+ researchers, students, and lifelong learners making sense of the frontier.
+                    </p>
+<div class="flex flex-col md:flex-row items-center justify-center gap-6">
+<button class="w-full md:w-auto px-12 py-5 bg-on-surface text-surface rounded-2xl font-label text-xl font-bold neo-shadow-lg hover:translate-y-[-4px] hover:shadow-[12px_12px_0px_0px_rgba(26,26,26,1)] transition-all active:translate-y-[2px] uppercase">
+                            Analyze Your First Paper
+                        </button>
+<a class="font-label text-sm uppercase font-bold tracking-widest border-b-2 border-on-surface pb-1 hover:text-primary transition-colors" href="#">See the demo</a>
+</div>
+</div>
+<!-- Abstract Decorative Circles -->
+<div class="absolute -top-24 -left-24 w-64 h-64 border-2 border-on-surface/10 rounded-full"></div>
+<div class="absolute -bottom-24 -right-24 w-96 h-96 border-2 border-on-surface/10 rounded-full"></div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-[#1A1A1A] w-full py-12 px-6 flex flex-col items-center gap-8">
+<div class="w-full max-w-screen-2xl flex flex-col md:flex-row justify-between items-center gap-8 border-b border-outline-variant/20 pb-12">
+<div class="flex flex-col items-center md:items-start gap-2">
+<span class="text-2xl font-black text-[#FAFAF7] font-['Newsreader']">🔬 PaperLens</span>
+<p class="font-['Space_Grotesk'] text-sm text-[#FAFAF7] opacity-70">Academic Authority with a Human Pulse.</p>
+</div>
+<div class="flex gap-10 font-label text-sm uppercase tracking-widest">
+<a class="text-[#FAFAF7] opacity-70 hover:text-primary-container transition-colors" href="#">Privacy</a>
+<a class="text-[#FAFAF7] opacity-70 hover:text-primary-container transition-colors" href="#">Terms</a>
+<a class="text-[#FAFAF7] opacity-70 hover:text-primary-container transition-colors" href="#">Support</a>
+</div>
+<div class="flex gap-4">
+<a class="w-10 h-10 border border-white/20 rounded flex items-center justify-center text-white hover:bg-white/10 transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">public</span>
+</a>
+<a class="w-10 h-10 border border-white/20 rounded flex items-center justify-center text-white hover:bg-white/10 transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">terminal</span>
+</a>
+</div>
+</div>
+<div class="flex flex-col items-center gap-2">
+<p class="font-['Space_Grotesk'] text-xs text-[#FAFAF7] opacity-50">© 2024 PaperLens AI. All rights reserved.</p>
+<p class="font-['Space_Grotesk'] text-[10px] text-[#FAFAF7] opacity-30 uppercase tracking-[0.2em]">Crafted for the Modern Intellectual</p>
+</div>
+</footer>
+</body></html>

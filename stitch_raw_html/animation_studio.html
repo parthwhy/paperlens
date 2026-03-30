@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PaperLens | Manim Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Work+Sans:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-error-container": "#93000a",
+                        "secondary": "#006c4f",
+                        "surface-dim": "#dadad7",
+                        "inverse-on-surface": "#f1f1ee",
+                        "primary-fixed-dim": "#edc157",
+                        "outline": "#807664",
+                        "tertiary-container": "#e3ceff",
+                        "on-tertiary-container": "#7828e1",
+                        "on-surface": "#1a1c1b",
+                        "on-tertiary-fixed": "#270057",
+                        "on-secondary-fixed": "#002116",
+                        "tertiary-fixed-dim": "#d5baff",
+                        "surface-container-highest": "#e2e3e0",
+                        "inverse-surface": "#2f312f",
+                        "secondary-fixed": "#54fdc4",
+                        "on-tertiary-fixed-variant": "#5f00c0",
+                        "on-background": "#1a1c1b",
+                        "error": "#ba1a1a",
+                        "surface": "#f9f9f6",
+                        "on-primary-fixed": "#251a00",
+                        "surface-container": "#eeeeeb",
+                        "inverse-primary": "#edc157",
+                        "tertiary": "#792ae2",
+                        "on-primary": "#ffffff",
+                        "primary": "#785a00",
+                        "on-secondary": "#ffffff",
+                        "background": "#f9f9f6",
+                        "on-secondary-container": "#007152",
+                        "on-error": "#ffffff",
+                        "surface-container-low": "#f4f4f1",
+                        "on-primary-container": "#765900",
+                        "tertiary-fixed": "#ecdcff",
+                        "surface-bright": "#f9f9f6",
+                        "secondary-container": "#51fac1",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e8e8e5",
+                        "secondary-fixed-dim": "#27e0a9",
+                        "surface-variant": "#e2e3e0",
+                        "on-surface-variant": "#4e4636",
+                        "on-primary-fixed-variant": "#5b4300",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#00513b",
+                        "outline-variant": "#d1c5b1",
+                        "surface-tint": "#785a00",
+                        "primary-fixed": "#ffdf9b",
+                        "primary-container": "#ffd166"
+                    },
+                    fontFamily: {
+                        "headline": ["Newsreader"],
+                        "body": ["Work Sans"],
+                        "label": ["Space Grotesk"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .neo-shadow {
+            box-shadow: 4px 4px 0px 0px rgba(26, 26, 26, 1);
+        }
+        .neo-shadow-sm {
+            box-shadow: 2px 2px 0px 0px rgba(26, 26, 26, 1);
+        }
+        .active-press:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-8 py-4 w-full sticky top-0 z-50 bg-[#FAFAF7] dark:bg-[#1A1A1A] border-b-2 border-[#1A1A1A]">
+<div class="flex items-center gap-8">
+<span class="font-newsreader font-black italic text-[#1A1A1A] dark:text-[#FAFAF7] text-2xl">PaperLens</span>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-[#1A1A1A] dark:text-[#FAFAF7] opacity-70 font-label uppercase tracking-wider text-xs hover:bg-[#ffd166] hover:text-[#1A1A1A] transition-colors duration-150" href="#">Library</a>
+<a class="text-[#1A1A1A] dark:text-[#FAFAF7] opacity-70 font-label uppercase tracking-wider text-xs hover:bg-[#ffd166] hover:text-[#1A1A1A] transition-colors duration-150" href="#">Concepts</a>
+<a class="text-[#785a00] dark:text-[#ffd166] font-bold border-b-2 border-[#ffd166] pb-1 font-label uppercase tracking-wider text-xs" href="#">Animations</a>
+<a class="text-[#1A1A1A] dark:text-[#FAFAF7] opacity-70 font-label uppercase tracking-wider text-xs hover:bg-[#ffd166] hover:text-[#1A1A1A] transition-colors duration-150" href="#">Archive</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 material-symbols-outlined text-[#1A1A1A] active:translate-y-0.5 transition-all">account_circle</button>
+<button class="p-2 material-symbols-outlined text-[#1A1A1A] active:translate-y-0.5 transition-all">settings</button>
+</div>
+</header>
+<div class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-screen w-64 border-r-2 border-[#1A1A1A] sticky left-0 bg-[#f4f4f1] p-4 gap-6">
+<div class="flex flex-col gap-1 mb-4">
+<span class="font-newsreader font-black text-xl text-[#1A1A1A]">The Curator</span>
+<span class="font-label text-[10px] uppercase tracking-[0.2em] text-primary">Academic Mode</span>
+</div>
+<button class="w-full py-3 bg-primary-container text-on-surface border-2 border-[#1A1A1A] neo-shadow font-label font-bold uppercase tracking-widest text-sm active-press">
+                New Project
+            </button>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 p-3 text-[#1A1A1A] font-label font-medium uppercase tracking-wider text-xs hover:translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">menu_book</span> Research
+                </a>
+<a class="flex items-center gap-3 p-3 text-[#1A1A1A] font-label font-medium uppercase tracking-wider text-xs hover:translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">hub</span> Canvas
+                </a>
+<a class="flex items-center gap-3 p-3 bg-[#ffd166] text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] scale-95 font-label font-medium uppercase tracking-wider text-xs" href="#">
+<span class="material-symbols-outlined">movie_filter</span> Manim Studio
+                </a>
+<a class="flex items-center gap-3 p-3 text-[#1A1A1A] font-label font-medium uppercase tracking-wider text-xs hover:translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">psychology</span> Insights
+                </a>
+</nav>
+<div class="mt-auto flex flex-col gap-2 pt-6 border-t-2 border-[#1A1A1A]/10">
+<a class="flex items-center gap-3 p-2 text-[#1A1A1A] font-label text-xs opacity-70" href="#">
+<span class="material-symbols-outlined text-sm">help_outline</span> Help
+                </a>
+<a class="flex items-center gap-3 p-2 text-[#1A1A1A] font-label text-xs opacity-70" href="#">
+<span class="material-symbols-outlined text-sm">logout</span> Logout
+                </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 bg-surface p-8">
+<!-- Header Section -->
+<div class="max-w-6xl mx-auto mb-12">
+<div class="flex items-center gap-4 mb-2">
+<span class="px-3 py-1 bg-tertiary-container text-on-tertiary-container text-[10px] font-label font-bold uppercase tracking-tighter border border-[#1A1A1A]">AI Generated</span>
+<span class="text-sm font-label text-outline uppercase tracking-widest">Project: LLM_Architectures_V2</span>
+</div>
+<h1 class="text-5xl font-headline font-bold text-on-surface leading-tight">
+                    Visualizing <span class="text-primary italic">Self-Attention</span> Mechanism
+                </h1>
+</div>
+<div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Video Player Section -->
+<div class="lg:col-span-8 flex flex-col gap-6">
+<div class="relative bg-black rounded-xl border-2 border-[#1A1A1A] overflow-hidden neo-shadow aspect-video group">
+<!-- Simulated Manim Animation -->
+<div class="absolute inset-0 flex items-center justify-center">
+<img alt="Manim Animation" class="w-full h-full object-cover opacity-90" data-alt="mathematical animation of self-attention mechanism showing matrices and vectors connecting words in a sentence dark background with glowing cyan and gold lines minimalist academic style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-00CndUKyuOscRWb7iz7PAZ_ZjnjscYxASnbKKKked8CvIsBfLfPqObucR2c3p8c47FFDiwWrbdfsQMol07rEE3fYuYqi7L4rdmuaDaGlLpqf2pazkyYVQ8KrFe9xf5YPlJKwDA_1hM76gS6_9mxM-QFv4p852lLFpmWOK-E96G2FHnIlaBkF6eQzVHf2-OQ2ma7BvwnwWxglfSqUtsiMlU8eFdwGp-erGql0dxCEKyrXz-D0xmVMr4wkIYvh6zK-tHsigksp_A"/>
+</div>
+<!-- Video Controls (Neo-Brutalist) -->
+<div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+<div class="flex flex-col gap-4">
+<div class="w-full h-2 bg-white/20 rounded-full overflow-hidden">
+<div class="w-1/3 h-full bg-primary-container"></div>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-6">
+<button class="material-symbols-outlined text-white text-3xl">play_arrow</button>
+<button class="material-symbols-outlined text-white text-2xl">replay_10</button>
+<button class="material-symbols-outlined text-white text-2xl">forward_10</button>
+<span class="text-white font-label text-sm tracking-widest">02:14 / 06:45</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-white">volume_up</button>
+<button class="material-symbols-outlined text-white">fullscreen</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Script & Logic Panel -->
+<div class="bg-surface-container-lowest border-2 border-[#1A1A1A] rounded-xl p-6 neo-shadow">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-label font-bold uppercase tracking-widest text-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">terminal</span> Script &amp; Logic
+                            </h3>
+<button class="text-xs font-label uppercase font-bold text-secondary border-b border-secondary">Export .py</button>
+</div>
+<div class="font-mono text-sm text-on-surface space-y-2 overflow-x-auto">
+<p class="text-outline-variant"># Defining the Query, Key, and Value matrices</p>
+<p><span class="text-tertiary">class</span> <span class="text-secondary">AttentionVisualization</span>(Scene):</p>
+<p class="pl-4">def construct(self):</p>
+<p class="pl-8">Q = Matrix([[1, 0], [0, 1]]).scale(0.5)</p>
+<p class="pl-8 text-primary-container bg-[#1A1A1A] px-1">K = Matrix([[1, 2], [3, 4]]).scale(0.5) <span class="text-[10px] ml-2 font-label italic opacity-50"># Vector alignment step</span></p>
+<p class="pl-8">V = Matrix([[0.5, 0], [0, 0.5]])</p>
+<p class="pl-8 mt-4 text-outline-variant"># Animate weight distribution</p>
+<p class="pl-8">self.play(Write(Q), Write(K))</p>
+<p class="pl-8">self.play(Q.animate.next_to(K, LEFT))</p>
+</div>
+</div>
+</div>
+<!-- AI Sidebar -->
+<div class="lg:col-span-4 flex flex-col gap-8">
+<!-- AI Insight Card -->
+<div class="bg-tertiary-container/30 border-2 border-[#1A1A1A] rounded-xl p-6 neo-shadow relative overflow-hidden">
+<div class="absolute -top-4 -right-4 w-16 h-16 bg-tertiary/10 rounded-full blur-2xl"></div>
+<h4 class="font-label font-bold uppercase tracking-widest text-xs text-tertiary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">auto_awesome</span> AI Context Layer
+                        </h4>
+<p class="text-sm font-body leading-relaxed mb-4">
+                            The current frame visualizes the <span class="italic font-semibold">Dot-Product</span> between Query and Key. Note how the intensity of the amber highlight correlates with the attention weight α<sub>i,j</sub>.
+                        </p>
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-surface-container-lowest border border-[#1A1A1A] text-[10px] font-label font-bold uppercase">Softmax</span>
+<span class="px-2 py-1 bg-surface-container-lowest border border-[#1A1A1A] text-[10px] font-label font-bold uppercase">Scaling Factor</span>
+</div>
+</div>
+<!-- Chat Input Section -->
+<div class="mt-auto bg-surface-container-low border-2 border-[#1A1A1A] rounded-xl p-6 neo-shadow">
+<div class="flex flex-col gap-4">
+<label class="font-label font-bold uppercase tracking-widest text-[10px] text-outline">Ask AI about this step</label>
+<div class="relative">
+<textarea class="w-full bg-surface-container-lowest border-2 border-[#1A1A1A] rounded-lg p-4 font-body text-sm focus:outline-none focus:ring-0 focus:border-primary transition-all placeholder:opacity-50" placeholder="e.g. Why is the matrix transposed here?" rows="3"></textarea>
+<button class="absolute bottom-3 right-3 bg-primary-container p-2 border-2 border-[#1A1A1A] neo-shadow-sm active-press flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">send</span>
+</button>
+</div>
+<div class="flex flex-col gap-2">
+<p class="text-[11px] font-label uppercase tracking-tight text-outline flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Agent Curator is active
+                                </p>
+</div>
+</div>
+</div>
+<!-- Thumbnail Strip -->
+<div class="flex flex-col gap-4">
+<h4 class="font-label font-bold uppercase tracking-widest text-xs text-outline">Scene Keyframes</h4>
+<div class="grid grid-cols-2 gap-3">
+<div class="aspect-video bg-[#1A1A1A] border-2 border-[#1A1A1A] rounded overflow-hidden cursor-pointer hover:scale-105 transition-transform">
+<img alt="Thumb 1" class="w-full h-full object-cover" data-alt="mathematical matrix multiplication visual manim style minimalist dark" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvF27tx37GzscjPX5nESpPaXTwb2G2JJgsGmTvZsTekEwC1s0hPCR21Rw1P_ufpyoWP-siiAws7wJSuO52ClwGmlmiP3eCNcPePYi-F0ddOn9SOatk6SSjhw-rxav2iE45sOmRqJC7Hv4apBSHQXn4d-xjO5P_o9k0eB1fpN1nTZ8tqkH0_e5l-WjZVFFNRQQ9KsDJBeuqwVnwVaOveIh4Tk9QsBPgCOw83qziRZRh-KqnzFCwHEgj3PSe1fxekONsQyHzHFZJWw"/>
+</div>
+<div class="aspect-video bg-[#1A1A1A] border-2 border-[#1A1A1A] rounded overflow-hidden cursor-pointer hover:scale-105 transition-transform opacity-50">
+<img alt="Thumb 2" class="w-full h-full object-cover" data-alt="abstract vector space visualization geometry manim academic style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvBOhT1fQGCNSaadgwgMi_C7IrfRmjrkXKFSOITHs078hc_KDyShUfuhBoJVNFRa6FiNY9mWhnHaLcfE7vA28SUqFk1ubA_BRICUYeGm7AKlc5sFi0R31tNglmCGmSgAhTul1yXKaBHYywR1dGsMbf4-MoGrJbMNm9qF8Wa3TWWf3bfzrDSw5X_Om51T38y1pg1k76R7MqY7ecLGwN7Je4N5jBG8kRde3lZXzPEWVPM-6kSaGewFEAfAnvCQWrkNUBKhgApC5r8w"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Mobile Bottom Nav -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-[#f4f4f1] border-t-2 border-[#1A1A1A] flex justify-around p-4 z-50">
+<button class="flex flex-col items-center gap-1 text-[#1A1A1A] opacity-70">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-label text-[10px] uppercase">Research</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#1A1A1A] opacity-70">
+<span class="material-symbols-outlined">hub</span>
+<span class="font-label text-[10px] uppercase">Canvas</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#785a00] font-bold">
+<span class="material-symbols-outlined">movie_filter</span>
+<span class="font-label text-[10px] uppercase">Studio</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#1A1A1A] opacity-70">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-label text-[10px] uppercase">Insights</span>
+</button>
+</nav>
+</body></html>
