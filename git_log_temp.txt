@@ -1,0 +1,9 @@
+1e26e2f stitch-ui-v2: complete neo-brutalist redesign (WIP)
+8788fb1 feat: stabilize backend, add persistent caching, and final pre-redesign UI
+73d4b1b neo bruatlist all working version 1
+5c7627f feat: async animation pipeline + frontend state persistence
+078ac31 docs: start milestone v1.1 - stabilize animation system
+e3bac99 docs: map existing codebase
+6612a35 feat: integrate frontend and fix RAG system
+5ef750c readme edit
+d85a1d3 feat: FastAPI backend with RAG pipeline, chat, tooltip, concept map
