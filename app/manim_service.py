@@ -22,6 +22,8 @@ import hashlib
 import json
 import re
 from pathlib import Path
+import sys
+import subprocess
 
 from groq import AsyncGroq
 from openai import AsyncOpenAI
@@ -253,6 +255,8 @@ class ManimService:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.scripts_dir = Path("./manim_scripts")
         self.scripts_dir.mkdir(exist_ok=True)
+        self.pdf_cache_dir = Path("pdf_cache")
+        self.pdf_cache_dir.mkdir(exist_ok=True)
 
         # In-memory caches
         self._paper_analysis_cache: dict[str, dict] = {}
@@ -311,12 +315,15 @@ class ManimService:
             self._context_cache[anim_id] = context
             
             self._job_store[anim_id] = {"status": "coding"}
-            logger.info(f"[JOB {anim_id}] Starting coding for concept: {concept}")
-            
-            manim_code = await self._generate_manim_code(concept, context)
             
             script_path = self.scripts_dir / f"{anim_id}.py"
-            script_path.write_text(manim_code)
+            # Check if we already have the generated code cached on disk!
+            if script_path.exists() and script_path.stat().st_size > 0:
+                logger.info(f"[JOB {anim_id}] Script already exists on disk. Skipping LLM generation.")
+            else:
+                logger.info(f"[JOB {anim_id}] Starting coding for concept: {concept}")
+                manim_code = await self._generate_manim_code(concept, context)
+                script_path.write_text(manim_code)
             
             self._job_store[anim_id] = {"status": "rendering"}
             logger.info(f"[JOB {anim_id}] Starting rendering for concept: {concept}")
@@ -330,7 +337,7 @@ class ManimService:
             logger.info(f"[JOB {anim_id}] Pipeline completed")
             
         except Exception as e:
-            logger.error(f"[JOB {anim_id}] Pipeline failed: {str(e)}", exc_info=True)
+            logger.error("[JOB {}] Pipeline failed: {}", anim_id, str(e), exc_info=True)
             self._job_store[anim_id] = {"status": "failed", "error": str(e)}
             (self.output_dir / f"{anim_id}.failed").touch()
 
@@ -361,7 +368,7 @@ class ManimService:
         try:
             analysis = await self._analyze_paper_with_gemini(paper_id)
         except Exception as e:
-            logger.warning(f"[GEMINI] Analysis failed, falling back to RAG: {e}")
+            logger.warning("[GEMINI] Analysis failed, falling back to RAG: {}", str(e))
             return self._get_rag_context(paper_id, concept)
 
         concept_data = next(
@@ -430,7 +437,7 @@ class ManimService:
             chunks = results["documents"][0]
             return f"CONCEPT: {concept}\n\nPAPER EXCERPTS:\n" + "\n\n---\n\n".join(chunks)
         except Exception as e:
-            logger.warning(f"[RAG] Could not retrieve context: {e}")
+            logger.warning("[RAG] Could not retrieve context: {}", str(e))
             return f"CONCEPT: {concept}"
 
     # ── Paper analysis with NVIDIA Nemotron ──────────────────────────────────
@@ -446,6 +453,16 @@ class ManimService:
         """
         if paper_id in self._paper_analysis_cache:
             return self._paper_analysis_cache[paper_id]
+
+        disk_cache_path = self.pdf_cache_dir / f"{paper_id}_concepts.json"
+        if disk_cache_path.exists():
+            logger.info(f"[ANALYSIS] Loading cached concept map for {paper_id} from disk")
+            try:
+                cached_data = json.loads(disk_cache_path.read_text())
+                self._paper_analysis_cache[paper_id] = cached_data
+                return cached_data
+            except Exception as e:
+                logger.warning(f"[ANALYSIS] Failed to load disk cache: {e}. Re-analyzing...")
 
         # Extract all text from the paper's ChromaDB collection
         logger.info(f"[ANALYSIS] Extracting text from paper {paper_id}")
@@ -480,7 +497,7 @@ class ManimService:
             logger.info(f"[ANALYSIS] Extracted {len(paper_text)} characters from {len(sections)} sections")
             
         except Exception as e:
-            logger.error(f"[ANALYSIS] Failed to extract text from ChromaDB: {e}")
+            logger.error("[ANALYSIS] Failed to extract text from ChromaDB: {}", str(e))
             raise
 
         # Use NVIDIA Nemotron for analysis
@@ -511,7 +528,7 @@ class ManimService:
             try:
                 result = json.loads(raw)
             except json.JSONDecodeError as json_err:
-                logger.warning(f"[ANALYSIS] Initial JSON parse failed: {json_err}")
+                logger.warning("[ANALYSIS] Initial JSON parse failed: {}", str(json_err))
                 logger.warning(f"[ANALYSIS] Raw response length: {len(raw)} chars")
                 
                 # Attempt to repair truncated JSON
@@ -563,7 +580,7 @@ class ManimService:
             return result
             
         except Exception as e:
-            logger.error(f"[ANALYSIS] NVIDIA Nemotron analysis failed: {e}")
+            logger.error("[ANALYSIS] NVIDIA Nemotron analysis failed: {}", str(e))
             raise
 
     # ── Code generation pipeline ──────────────────────────────────────────────
@@ -662,7 +679,7 @@ class ManimService:
         quality_flag = "-ql" if getattr(settings, "manim_quality", "low") == "low" else "-qh"
         quality_subdir = "480p15" if quality_flag == "-ql" else "1080p60"
 
-        cmd = ["manim", quality_flag, str(script_path), "ConceptAnimation"]
+        cmd = [sys.executable, "-m", "manim", quality_flag, str(script_path), "ConceptAnimation"]
         logger.info(f"[RENDER] Starting Manim for anim_id={anim_id}")
 
         try:
@@ -694,7 +711,7 @@ class ManimService:
             logger.error(f"[RENDER] Timed out for {anim_id}")
             (self.output_dir / f"{anim_id}.failed").touch()
         except Exception as e:
-            logger.error(f"[RENDER] Unexpected error for {anim_id}: {e}")
+            logger.exception("[RENDER] Unexpected error for {}:", anim_id)
             (self.output_dir / f"{anim_id}.failed").touch()
 
     async def _run_manim(
@@ -706,24 +723,21 @@ class ManimService:
         quality_subdir: str,
     ) -> bool:
         """Execute manim subprocess. Returns True if MP4 was produced."""
-        proc = await asyncio.create_subprocess_exec(
-            *cmd,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-        )
-        try:
-            stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=120)
-        except asyncio.TimeoutError:
-            proc.kill()
-            raise
+        def run_proc():
+            return subprocess.run(cmd, capture_output=True, timeout=120)
 
-        stderr_text = stderr.decode(errors="replace")
+        try:
+            proc = await asyncio.to_thread(run_proc)
+            stderr_text = proc.stderr.decode(errors="replace")
+            returncode = proc.returncode
+        except subprocess.TimeoutExpired:
+            raise asyncio.TimeoutError()
 
         # Always save stderr for retry context
         stderr_path = self.scripts_dir / f"{anim_id}.stderr"
         stderr_path.write_text(stderr_text)
 
-        if proc.returncode == 0:
+        if returncode == 0:
             # Manim outputs to media/videos/<script_stem>/<quality>/ConceptAnimation.mp4
             script_stem = script_path.stem
             expected = (
@@ -737,7 +751,7 @@ class ManimService:
                 logger.error(f"[RENDER] Manim exited 0 but no MP4 at {expected}")
                 return False
         else:
-            logger.warning(f"[RENDER] Manim exited {proc.returncode}. stderr tail:\n{stderr_text[-400:]}")
+            logger.warning(f"[RENDER] Manim exited {returncode}. stderr tail:\n{stderr_text[-400:]}")
             return False
 
     # ── Concept extraction (kept for backwards compat / other callers) ────────

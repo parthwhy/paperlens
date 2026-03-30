@@ -1,5 +1,6 @@
 import React from 'react';
 import type { View } from '../types';
+import { useTheme } from '../hooks/useTheme';
 
 interface GlobalNavProps {
   view: View;
@@ -7,15 +8,29 @@ interface GlobalNavProps {
 }
 
 export function GlobalNav({ view, setView }: GlobalNavProps) {
+  const { theme, toggleTheme } = useTheme();
+
   return (
-    <nav className="w-16 h-full flex flex-col items-center py-4 bg-surface border-r-2 border-black z-20 shrink-0">
+    <nav className="w-16 h-full flex flex-col items-center py-4 bg-surface border-r-2 border-border z-20 shrink-0">
       <div 
-        className="w-10 h-10 bg-primary rounded-xl brutal-border brutal-shadow-sm flex items-center justify-center text-white font-bold text-xl mb-8 cursor-pointer transform transition-transform hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+        className="w-10 h-10 bg-primary rounded-xl border-2 border-border shadow-[4px_4px_0px_0px_var(--color-border-base)] flex items-center justify-center text-white font-bold text-xl mb-4 cursor-pointer transform transition-transform hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--color-border-base)]"
         onClick={() => setView('landing')}
         title="PaperLens Home"
       >
         P
       </div>
+
+      <button
+        onClick={toggleTheme}
+        title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
+        className="w-10 h-10 mb-8 rounded-xl flex items-center justify-center transition-all bg-surface-container hover:bg-surface-muted border-2 border-border shadow-[2px_2px_0px_0px_var(--color-border-base)] text-primary"
+      >
+        {theme === 'light' ? (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+        ) : (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+        )}
+      </button>
 
       <div className="flex flex-col gap-4 w-full px-2">
         <NavIcon 
@@ -54,8 +69,8 @@ function NavIcon({ active, icon, label, onClick }: { active: boolean, icon: Reac
       title={label}
       className={`w-12 h-12 mx-auto rounded-xl flex items-center justify-center transition-all ${
         active 
-          ? 'bg-primary text-white brutal-border brutal-shadow-sm -translate-y-0.5' 
-          : 'text-gray-500 hover:bg-surface-container hover:text-black border-2 border-transparent hover:border-black'
+          ? 'bg-primary text-white border-2 border-border shadow-[2px_2px_0px_0px_var(--color-border-base)] -translate-y-0.5' 
+          : 'text-on-background hover:bg-surface-container hover:text-primary border-2 border-transparent hover:border-border'
       }`}
     >
       {icon}

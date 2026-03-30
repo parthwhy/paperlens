@@ -3,7 +3,7 @@
 ## Terminal 1 - Backend
 ```bash
 .venv\Scripts\activate
-python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
 
 ## Terminal 2 - Frontend

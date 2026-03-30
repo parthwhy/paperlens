@@ -5,37 +5,59 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
-  /* Neutral palette */
-  --color-background: #fafafa;
-  --color-on-background: #0f0f0f;
+  --color-background: var(--color-bg-base);
+  --color-on-background: var(--color-text-base);
   
-  --color-surface: #ffffff;
-  --color-surface-dim: #f5f5f5;
-  --color-surface-container: #eeeeee;
-  --color-surface-muted: #e5e5e5;
+  --color-surface: var(--color-surface-base);
+  --color-surface-dim: var(--color-surface-dim-base);
+  --color-surface-container: var(--color-surface-container-base);
+  --color-surface-muted: var(--color-surface-muted-base);
   
-  --color-inverse-surface: #0f0f0f;
+  --color-primary: var(--color-primary-base);
+  --color-primary-hover: var(--color-primary-hover-base);
+  --color-primary-container: var(--color-primary-container-base);
+  --color-on-primary: var(--color-on-primary-base);
+
+  --color-secondary: var(--color-secondary-base);
+  --color-tertiary: var(--color-tertiary-base);
   
-  /* Brand: deep indigo */
-  --color-primary: #4f46e5;
-  --color-primary-hover: #4338ca;
-  --color-primary-light: #eef2ff;
-  --color-primary-muted: #c7d2fe;
-  --color-on-primary: #ffffff;
-  
-  /* Semantic */
   --color-success: #059669;
   --color-warning: #d97706;
   --color-danger: #dc2626;
-  
-  /* Concept types */
-  --color-type-method: #7c3aed;
-  --color-type-concept: #2563eb;
-  --color-type-dataset: #059669;
-  --color-type-metric: #d97706;
-  
-  --color-border: rgba(0, 0, 0, 0.08);
-  --color-border-strong: rgba(0, 0, 0, 0.15);
+
+  --color-border: var(--color-border-base);
+}
+
+:root {
+  --color-bg-base: #f9f9f6;
+  --color-text-base: #1a1c1b;
+  --color-surface-base: #ffffff;
+  --color-surface-dim-base: #dadad7;
+  --color-surface-container-base: #eeeeeb;
+  --color-surface-muted-base: #f4f4f1;
+  --color-primary-base: #785a00;
+  --color-primary-hover-base: #5b4300;
+  --color-primary-container-base: #ffd166;
+  --color-on-primary-base: #ffffff;
+  --color-secondary-base: #006c4f;
+  --color-tertiary-base: #792ae2;
+  --color-border-base: #1a1c1b;
+}
+
+.dark {
+  --color-bg-base: #121212;
+  --color-text-base: #e2e3e0;
+  --color-surface-base: #1e1e1e;
+  --color-surface-dim-base: #2a2a2a;
+  --color-surface-container-base: #242424;
+  --color-surface-muted-base: #2f2f2f;
+  --color-primary-base: #ffd166;
+  --color-primary-hover-base: #edc157;
+  --color-primary-container-base: #785a00;
+  --color-on-primary-base: #1a1c1b;
+  --color-secondary-base: #54fdc4;
+  --color-tertiary-base: #d5baff;
+  --color-border-base: #e2e3e0;
 }
 
 @layer base {
@@ -46,67 +68,6 @@
 }
 
 /* ── Utility classes ──────────────────────────────────────────────────── */
-
-/* ── Soft Brutalist Utility Classes ─────────────────────────────────── */
-
-.brutal-border {
-  @apply border-2 border-black;
-}
-
-.brutal-shadow {
-  box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
-}
-
-.brutal-shadow-sm {
-  box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
-}
-
-.card {
-  @apply bg-surface rounded-xl border-2 border-black transition-transform;
-  box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
-}
-
-.card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px 0px rgba(0,0,0,1);
-}
-
-.card-elevated {
-  @apply bg-surface rounded-xl border-2 border-black;
-  box-shadow: 8px 8px 0px 0px rgba(0,0,0,1);
-}
-
-.btn-primary {
-  @apply bg-primary text-on-primary px-5 py-2.5 rounded-lg font-bold border-2 border-black transition-all;
-  box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
-}
-
-.btn-primary:hover {
-  @apply bg-primary-hover;
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px 0px rgba(0,0,0,1);
-}
-
-.btn-primary:active {
-  transform: translate(3px, 3px);
-  box-shadow: 1px 1px 0px 0px rgba(0,0,0,1);
-}
-
-.btn-secondary {
-  @apply bg-surface text-on-background px-5 py-2.5 rounded-lg font-bold border-2 border-black transition-all;
-  box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
-}
-
-.btn-secondary:hover {
-  @apply bg-surface-muted;
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0px 0px rgba(0,0,0,1);
-}
-
-.btn-secondary:active {
-  transform: translate(2px, 2px);
-  box-shadow: 0px 0px 0px 0px rgba(0,0,0,1);
-}
 
 .dot-grid {
   background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px);
@@ -152,10 +113,3 @@
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
-
-/* ── Concept type badges ──────────────────────────────────────────────── */
-
-.badge-method { @apply bg-[#f5f3ff] text-type-method border-[#ede9fe]; }
-.badge-concept { @apply bg-[#eff6ff] text-type-concept border-[#dbeafe]; }
-.badge-dataset { @apply bg-[#ecfdf5] text-type-dataset border-[#d1fae5]; }
-.badge-metric { @apply bg-[#fffbeb] text-type-metric border-[#fef3c7]; }

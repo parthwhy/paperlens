@@ -182,12 +182,12 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
   };
 
   return (
-    <div className="flex-1 w-full bg-[#f4f4f0] p-8 overflow-auto flex flex-col gap-8 dot-grid">
+    <div className="flex-1 w-full bg-background p-8 overflow-auto flex flex-col gap-8 dot-grid">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => setView('concept-map')}
-            className="w-10 h-10 border-2 border-black bg-white flex items-center justify-center shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-transform"
+            className="w-10 h-10 border-2 border-border text-on-background bg-surface-container flex items-center justify-center shadow-[4px_4px_0_0_var(--color-border-base)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_var(--color-border-base)] transition-transform"
           >
             <X className="w-6 h-6 font-bold" />
           </button>
@@ -197,7 +197,7 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
 
       <div className="flex gap-8 flex-1 min-h-0">
         {/* Left: Concept Selection */}
-        <div className="w-96 bg-white brutal-border shadow-[8px_8px_0_0_rgba(0,0,0,1)] p-8 flex flex-col gap-6 shrink-0">
+        <div className="w-96 bg-surface-container border-2 border-border shadow-[8px_8px_0_0_var(--color-border-base)] p-8 flex flex-col gap-6 shrink-0">
           <h3 className="text-sm font-black uppercase tracking-widest text-primary">
             Main Concepts
           </h3>
@@ -207,7 +207,7 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
               <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
           ) : concepts.length === 0 ? (
-            <div className="text-base font-bold text-gray-400 italic py-8 text-center bg-surface-dim brutal-border p-4 shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
+            <div className="text-base font-bold text-on-surface-variant italic py-8 text-center bg-background border-2 border-border p-4 shadow-[4px_4px_0_0_var(--color-border-base)]">
               No concepts found. Make sure the paper is fully ingested.
             </div>
           ) : (
@@ -217,14 +217,14 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
                   key={concept.id}
                   onClick={() => setSelectedConcept(concept)}
                   className={cn(
-                    "w-full text-left p-4 transition-transform brutal-border block relative",
+                    "w-full text-left p-4 transition-transform border-2 border-border block relative",
                     selectedConcept?.id === concept.id
-                      ? "bg-primary text-white shadow-[4px_4px_0_0_rgba(0,0,0,1)] translate-x-1 -translate-y-1"
-                      : "bg-surface hover:-translate-y-1 shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)]"
+                      ? "bg-primary text-on-primary shadow-[4px_4px_0_0_var(--color-border-base)] translate-x-1 -translate-y-1"
+                      : "bg-surface hover:-translate-y-1 shadow-[4px_4px_0_0_var(--color-border-base)] hover:shadow-[6px_6px_0_0_var(--color-border-base)]"
                   )}
                 >
                   <div className="font-black text-lg mb-1">{concept.label}</div>
-                  <div className={cn("text-sm font-medium line-clamp-2", selectedConcept?.id === concept.id ? "text-white/90" : "text-gray-600")}>
+                  <div className={cn("text-sm font-medium line-clamp-2", selectedConcept?.id === concept.id ? "text-on-primary/90" : "text-on-surface-variant")}>
                     {concept.explanation}
                   </div>
                   {concept.key_equation && (
@@ -238,17 +238,17 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
           )}
 
           {selectedConcept && (
-            <div className="mt-auto pt-6 border-t-4 border-black border-dashed">
+            <div className="mt-auto pt-6 border-t-4 border-border border-dashed">
               <button
                 onClick={handleStartRendering}
                 disabled={!paperId}
-                className="w-full bg-[#10b981] text-black brutal-border p-4 text-sm font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-primary text-on-primary border-2 border-border p-4 text-sm font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_var(--color-border-base)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_var(--color-border-base)] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Play className="w-5 h-5 fill-black" />
+                <Play className="w-5 h-5 fill-on-primary" />
                 Start Rendering Video
               </button>
               {error && (
-                <p className="text-sm text-red-600 font-bold mt-3 bg-red-100 p-2 brutal-border text-center">{error}</p>
+                <p className="text-sm text-red-600 font-bold mt-3 bg-red-100 p-2 border-2 border-border text-center">{error}</p>
               )}
             </div>
           )}
@@ -256,25 +256,25 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
 
         {/* Center: Selected Concept Details */}
         <div className="flex-1 flex flex-col gap-8 min-w-[500px]">
-          <div className="bg-white brutal-border shadow-[8px_8px_0_0_rgba(0,0,0,1)] p-8 flex-1 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
+          <div className="bg-surface-container border-2 border-border shadow-[8px_8px_0_0_var(--color-border-base)] p-8 flex-1 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
             {selectedConcept ? (
               <>
-                <div className="border-b-4 border-black pb-4">
-                  <h3 className="text-4xl font-black mb-3">
+                <div className="border-b-4 border-border pb-4">
+                  <h3 className="text-4xl font-black mb-3 text-on-background">
                     {selectedConcept.label}
                   </h3>
-                  <div className="inline-block px-4 py-1 bg-surface-muted brutal-border shadow-[2px_2px_0_0_rgba(0,0,0,1)] text-xs font-black uppercase tracking-widest text-gray-800">
+                  <div className="inline-block px-4 py-1 bg-surface border-2 border-border shadow-[2px_2px_0_0_var(--color-border-base)] text-xs font-black uppercase tracking-widest text-on-background">
                     {selectedConcept.type}
                   </div>
                 </div>
 
-                <div className="bg-surface-dim brutal-border p-6 text-lg font-medium leading-relaxed shadow-[4px_4px_0_0_rgba(0,0,0,1)] text-gray-800">
+                <div className="bg-background border-2 border-border p-6 text-lg font-medium leading-relaxed shadow-[4px_4px_0_0_var(--color-border-base)] text-on-background">
                   {selectedConcept.explanation}
                 </div>
 
                 {selectedConcept.key_equation && (
-                  <div className="bg-primary text-white brutal-border p-6 shadow-[4px_4px_0_0_rgba(0,0,0,1)] overflow-x-auto">
-                    <div className="text-xs font-black uppercase tracking-widest text-white/70 mb-3">
+                  <div className="bg-primary text-on-primary border-2 border-border p-6 shadow-[4px_4px_0_0_var(--color-border-base)] overflow-x-auto">
+                    <div className="text-xs font-black uppercase tracking-widest text-on-primary/70 mb-3">
                       Key Equation
                     </div>
                     <div className="font-mono text-xl font-bold">
@@ -284,20 +284,20 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
                 )}
 
                 {selectedConcept.visual_hint && (
-                  <div className="bg-white brutal-border border-dashed p-6 shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
+                  <div className="bg-surface border-2 border-border border-dashed p-6 shadow-[4px_4px_0_0_var(--color-border-base)]">
                     <div className="text-xs font-black uppercase tracking-widest text-primary mb-4">
                       Visual Approach
                     </div>
                     {selectedConcept.visual_hint.metaphor && (
-                      <div className="text-base font-bold italic text-gray-800 mb-4 bg-[#fef08a] p-3 brutal-border inline-block">
+                      <div className="text-base font-bold italic text-on-background mb-4 bg-primary/20 p-3 border-2 border-border inline-block">
                         "{selectedConcept.visual_hint.metaphor}"
                       </div>
                     )}
                     {selectedConcept.visual_hint.steps && (
                       <div className="space-y-3">
                         {selectedConcept.visual_hint.steps.slice(0, 3).map((step: string, i: number) => (
-                          <div key={i} className="text-sm font-bold text-gray-700 flex gap-3">
-                            <span className="w-6 h-6 rounded-full bg-black text-white shrink-0 flex items-center justify-center font-black">{i + 1}</span>
+                          <div key={i} className="text-sm font-bold text-on-surface-variant flex gap-3">
+                            <span className="w-6 h-6 rounded-full bg-border text-on-background shrink-0 flex items-center justify-center font-black">{i + 1}</span>
                             <span className="mt-0.5">{step}</span>
                           </div>
                         ))}
@@ -307,7 +307,7 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
                 )}
               </>
             ) : (
-              <div className="flex-1 flex items-center justify-center text-gray-400 font-bold text-xl italic text-center p-12 bg-surface-dim brutal-border border-dashed">
+              <div className="flex-1 flex items-center justify-center text-on-surface-variant font-bold text-xl italic text-center p-12 bg-background border-2 border-border border-dashed">
                 Select a concept from the list to see details
               </div>
             )}
@@ -316,13 +316,13 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
 
         {/* Right: Animation Queue & Videos */}
         <div className="w-96 flex flex-col gap-8 shrink-0">
-          <div className="bg-white brutal-border shadow-[8px_8px_0_0_rgba(0,0,0,1)] p-8 flex flex-col gap-6 flex-1 overflow-hidden">
-            <h3 className="text-sm font-black uppercase tracking-widest text-primary pb-4 border-b-4 border-black">
+          <div className="bg-surface-container border-2 border-border shadow-[8px_8px_0_0_var(--color-border-base)] p-8 flex flex-col gap-6 flex-1 overflow-hidden">
+            <h3 className="text-sm font-black uppercase tracking-widest text-primary pb-4 border-b-4 border-border">
               Animation Queue ({animations.length})
             </h3>
             
             {animations.length === 0 ? (
-              <div className="flex-1 flex items-center justify-center text-sm font-bold text-gray-400 italic bg-surface-dim brutal-border border-dashed p-6 text-center">
+              <div className="flex-1 flex items-center justify-center text-sm font-bold text-on-surface-variant italic bg-background border-2 border-border border-dashed p-6 text-center">
                 No animations yet. Select a concept and click "Start Rendering Video"
               </div>
             ) : (
@@ -330,12 +330,12 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
                 {animations.map((anim) => (
                   <div
                     key={anim.job_id}
-                    className="bg-surface-dim brutal-border shadow-[4px_4px_0_0_rgba(0,0,0,1)] p-5 flex flex-col gap-4"
+                    className="bg-background border-2 border-border shadow-[4px_4px_0_0_var(--color-border-base)] p-5 flex flex-col gap-4 text-on-background"
                   >
-                    <div className="flex items-start justify-between gap-2 border-b-2 border-black pb-2">
-                      <div className="font-black text-base flex-1">{anim.concept}</div>
+                    <div className="flex items-start justify-between gap-2 border-b-2 border-border pb-2">
+                       <div className="font-black text-base flex-1">{anim.concept}</div>
                       <div className={cn(
-                        "text-[10px] font-black uppercase tracking-widest px-2 py-1 brutal-border bg-white shadow-[2px_2px_0_0_rgba(0,0,0,1)]",
+                        "text-[10px] font-black uppercase tracking-widest px-2 py-1 border-2 border-border bg-surface-container shadow-[2px_2px_0_0_var(--color-border-base)]",
                         getStatusColor(anim.status)
                       )}>
                         {getStatusText(anim.status)}
@@ -343,9 +343,9 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
                     </div>
 
                     {['planning', 'coding', 'rendering'].includes(anim.status) && (
-                      <div className="flex items-center gap-3 bg-white brutal-border p-3">
+                      <div className="flex items-center gap-3 bg-surface-container border-2 border-border p-3">
                         <Loader2 className="w-5 h-5 animate-spin text-primary" />
-                        <div className="text-sm font-bold text-gray-800">
+                        <div className="text-sm font-bold text-on-background">
                           {getStatusText(anim.status)}
                         </div>
                       </div>
@@ -353,7 +353,7 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
 
                     {anim.status === 'ready' && anim.video_url && (
                       <div className="space-y-3">
-                        <div className="brutal-border shadow-[4px_4px_0_0_rgba(0,0,0,1)] bg-black p-1">
+                        <div className="border-2 border-border shadow-[4px_4px_0_0_var(--color-border-base)] bg-black p-1">
                           <video
                             src={`http://127.0.0.1:8000${anim.video_url}`}
                             controls
@@ -363,7 +363,7 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
                         <a
                           href={`http://127.0.0.1:8000${anim.video_url}`}
                           download
-                          className="block w-full text-center px-4 py-3 bg-[#10b981] hover:bg-[#059669] text-black brutal-border shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-transform text-xs font-black uppercase tracking-widest"
+                          className="block w-full text-center px-4 py-3 bg-primary hover:bg-primary/80 text-on-primary border-2 border-border shadow-[4px_4px_0_0_var(--color-border-base)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_var(--color-border-base)] transition-transform text-xs font-black uppercase tracking-widest"
                         >
                           Download MP4
                         </a>
@@ -372,12 +372,12 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
 
                     {anim.status === 'failed' && (
                       <div className="flex flex-col gap-3">
-                        <div className="text-xs font-bold text-red-700 bg-red-100 p-3 brutal-border shadow-[4px_4px_0_0_rgba(0,0,0,1)]" title={anim.error}>
+                        <div className="text-xs font-bold text-red-700 bg-red-100 p-3 border-2 border-border shadow-[4px_4px_0_0_var(--color-border-base)]" title={anim.error}>
                           {anim.error || "Rendering failed. Try again."}
                         </div>
                         <button 
                           onClick={() => handleRetry(anim)}
-                          className="w-full text-center px-4 py-3 bg-[#fca5a5] hover:bg-[#f87171] text-black brutal-border shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-transform text-[10px] font-black uppercase tracking-widest"
+                          className="w-full text-center px-4 py-3 bg-[#fca5a5] hover:bg-[#f87171] text-black border-2 border-border shadow-[4px_4px_0_0_var(--color-border-base)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_var(--color-border-base)] transition-transform text-[10px] font-black uppercase tracking-widest"
                         >
                           Retry Animation
                         </button>

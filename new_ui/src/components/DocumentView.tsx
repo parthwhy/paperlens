@@ -252,9 +252,9 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
     <div className="flex-1 w-full h-full flex bg-background overflow-hidden relative">
       
       {/* 1. PDF Area (Main Pane) */}
-      <div className={`flex-1 flex flex-col relative h-full overflow-hidden transition-all ${isChatOpen ? 'border-r-2 border-black' : ''}`}>
+      <div className={`flex-1 flex flex-col relative h-full overflow-hidden transition-all ${isChatOpen ? 'border-r-2 border-border' : ''}`}>
         {/* PDF Controls - Sticky */}
-        <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-surface border-b-2 border-black">
+        <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-surface-container border-b-2 border-border">
           <div className="flex items-center gap-4">
             <span className="font-bold text-on-background">
               {numPages} {numPages === 1 ? 'page' : 'pages'}
@@ -264,7 +264,7 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
           <div className="flex items-center gap-2">
             <button
               onClick={zoomOut}
-              className="p-2 brutal-border rounded-lg hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-transform bg-surface"
+              className="p-2 border-2 border-border rounded-lg hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_var(--color-border-base)] transition-transform bg-surface-container text-on-background"
               title="Zoom out"
             >
               <ZoomOut className="w-5 h-5" />
@@ -274,18 +274,18 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
             </span>
             <button
               onClick={zoomIn}
-              className="p-2 brutal-border rounded-lg hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-transform bg-surface"
+              className="p-2 border-2 border-border rounded-lg hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_var(--color-border-base)] transition-transform bg-surface-container text-on-background"
               title="Zoom in"
             >
               <ZoomIn className="w-5 h-5" />
             </button>
-            <span className="text-xs font-bold text-gray-500 ml-2">Ctrl+Scroll</span>
+            <span className="text-xs font-bold text-on-surface-variant ml-2">Ctrl+Scroll</span>
           </div>
 
           {!isChatOpen && (
             <button
               onClick={() => setIsChatOpen(true)}
-              className="px-4 py-2 bg-primary text-white font-bold brutal-border brutal-shadow-sm hover:-translate-y-0.5 transition-transform flex items-center gap-2"
+              className="px-4 py-2 bg-primary text-on-primary font-bold border-2 border-border shadow-[2px_2px_0px_0px_var(--color-border-base)] hover:-translate-y-0.5 transition-transform flex items-center gap-2"
             >
               <MessageSquare className="w-4 h-4" /> AI Chat
             </button>
@@ -293,20 +293,20 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
         </div>
 
         {/* PDF Viewer - Scrollable All Pages */}
-        <div ref={pdfScrollContainerRef} className="flex-1 overflow-auto flex justify-center p-8 bg-surface-dim">
+        <div ref={pdfScrollContainerRef} className="flex-1 overflow-auto flex justify-center p-8 bg-surface-muted">
           <div ref={pdfContainerRef} style={{ position: 'relative' }} className="flex flex-col gap-8">
             <Document
               file={pdfUrl}
               onLoadSuccess={onDocumentLoadSuccess}
               loading={
-                <div className="flex flex-col items-center gap-4 p-12 bg-surface brutal-border brutal-shadow-sm rounded-xl">
-                  <div className="w-12 h-12 border-4 border-black border-t-primary rounded-full animate-spin" />
-                  <p className="font-bold">Loading PDF...</p>
+                <div className="flex flex-col items-center gap-4 p-12 bg-surface-container border-2 border-border shadow-[4px_4px_0_0_var(--color-border-base)] rounded-xl">
+                  <div className="w-12 h-12 border-4 border-border border-t-primary rounded-full animate-spin" />
+                  <p className="font-bold text-on-background">Loading PDF...</p>
                 </div>
               }
               error={
-                <div className="flex flex-col items-center gap-4 p-12 bg-surface brutal-border brutal-shadow-sm rounded-xl text-center">
-                  <p className="font-bold text-red-600">Failed to load PDF</p>
+                <div className="flex flex-col items-center gap-4 p-12 bg-surface-container border-2 border-border shadow-[4px_4px_0_0_var(--color-border-base)] rounded-xl text-center">
+                  <p className="font-bold text-error">Failed to load PDF</p>
                 </div>
               }
             >
@@ -314,7 +314,7 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
                 <div 
                   key={`page_${index + 1}`} 
                   id={`pdf-page-${index + 1}`}
-                  className="bg-white brutal-border mb-8 shadow-[8px_8px_0_0_rgba(0,0,0,1)] transition-transform relative"
+                  className="bg-background border-2 border-border mb-8 shadow-[8px_8px_0_0_var(--color-border-base)] transition-transform relative"
                 >
                   <Page
                     pageNumber={index + 1}
@@ -323,7 +323,7 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
                     renderAnnotationLayer={true}
                   />
                   {/* Page number label */}
-                  <div className="absolute -left-12 top-0 h-full flex items-center justify-center -rotate-90 origin-center text-sm font-black text-gray-400 select-none">
+                  <div className="absolute -left-12 top-0 h-full flex items-center justify-center -rotate-90 origin-center text-sm font-black text-on-surface-variant select-none">
                     PAGE {index + 1}
                   </div>
                 </div>
@@ -352,27 +352,27 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
 
       {/* 2. Contextual Tool Sidebar (AI Chat) */}
       {isChatOpen && (
-        <div className="w-96 flex flex-col h-full bg-surface shrink-0 z-20">
+        <div className="w-96 flex flex-col h-full bg-surface-container shrink-0 z-20">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b-2 border-black">
+          <div className="flex items-center justify-between p-4 border-b-2 border-border">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-primary brutal-border flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                <MessageSquare className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 rounded-lg bg-primary border-2 border-border flex items-center justify-center shadow-[2px_2px_0px_0px_var(--color-border-base)]">
+                <MessageSquare className="w-4 h-4 text-on-primary" />
               </div>
-              <span className="font-black text-lg">AI Assistant</span>
+              <span className="font-black text-lg text-on-background">AI Assistant</span>
             </div>
             <button
               onClick={() => setIsChatOpen(false)}
-              className="w-8 h-8 rounded-lg border-2 border-transparent hover:border-black hover:bg-surface-dim transition-colors flex items-center justify-center font-bold"
+              className="w-8 h-8 rounded-lg border-2 border-transparent hover:border-border hover:bg-surface-muted text-on-background transition-colors flex items-center justify-center font-bold"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-surface-dim inner-shadow-brutal">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-background">
             {chatMessages.length === 0 ? (
-              <div className="text-center font-bold text-gray-400 mt-8 p-4 border-2 border-dashed border-gray-300 rounded-xl">
+              <div className="text-center font-bold text-on-surface-variant mt-8 p-4 border-2 border-dashed border-border rounded-xl">
                 Ask me anything about this paper
               </div>
             ) : (
@@ -381,14 +381,14 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
                   key={idx}
                   className={`flex flex-col gap-1 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
                 >
-                  <div className="flex items-center gap-2 text-xs font-bold text-gray-500 mb-1 px-1">
+                  <div className="flex items-center gap-2 text-xs font-bold text-on-surface-variant mb-1 px-1">
                     {msg.role === 'user' ? 'You' : 'PaperLens'}
                   </div>
                   <div
-                    className={`max-w-[85%] rounded-xl p-3 text-sm font-medium brutal-border ${
+                    className={`max-w-[85%] rounded-xl p-3 text-sm font-medium border-2 border-border ${
                       msg.role === 'user'
-                        ? 'bg-primary text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] rounded-tr-sm'
-                        : 'bg-white text-on-background shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] rounded-tl-sm'
+                        ? 'bg-primary text-on-primary shadow-[2px_2px_0px_0px_var(--color-border-base)] rounded-tr-sm'
+                        : 'bg-surface-container text-on-background shadow-[2px_2px_0px_0px_var(--color-border-base)] rounded-tl-sm'
                     }`}
                   >
                     {msg.content}
@@ -402,7 +402,7 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
                             <button
                               key={i}
                               onClick={() => handleCitationClick(scrollToPage)}
-                              className="text-xs px-2 py-1 bg-surface-dim brutal-border hover:-translate-y-[1px] shadow-[1px_1px_0_0_black] transition-transform text-black font-bold"
+                              className="text-xs px-2 py-1 bg-surface-muted border-2 border-border hover:-translate-y-[1px] shadow-[2px_2px_0_0_var(--color-border-base)] transition-transform text-on-background font-bold"
                               title={`Page ${scrollToPage}: ${citation.text.substring(0, 100)}...`}
                             >
                               Pg. {scrollToPage}
@@ -417,14 +417,14 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
             )}
             {isSendingMessage && (
               <div className="flex flex-col gap-1 items-start">
-                <div className="flex items-center gap-2 text-xs font-bold text-gray-500 mb-1 px-1">
+                <div className="flex items-center gap-2 text-xs font-bold text-on-surface-variant mb-1 px-1">
                   PaperLens
                 </div>
-                <div className="bg-white brutal-border rounded-xl rounded-tl-sm p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                <div className="bg-surface-container border-2 border-border rounded-xl rounded-tl-sm p-4 shadow-[2px_2px_0px_0px_var(--color-border-base)]">
                   <div className="flex gap-1.5">
-                    <div className="w-2.5 h-2.5 bg-black rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <div className="w-2.5 h-2.5 bg-black rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <div className="w-2.5 h-2.5 bg-black rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <div className="w-2.5 h-2.5 bg-on-background rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <div className="w-2.5 h-2.5 bg-on-background rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <div className="w-2.5 h-2.5 bg-on-background rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                 </div>
               </div>
@@ -433,7 +433,7 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
           </div>
 
           {/* Input */}
-          <div className="p-4 border-t-2 border-black bg-surface">
+          <div className="p-4 border-t-2 border-border bg-surface-container">
             <div className="flex relative">
               <input
                 type="text"
@@ -442,12 +442,12 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                 placeholder="Ask a question..."
                 disabled={isSendingMessage}
-                className="w-full bg-surface-dim brutal-border rounded-xl py-3 pl-4 pr-16 text-sm font-bold focus:outline-none focus:bg-white transition-colors disabled:opacity-50"
+                className="w-full bg-background border-2 border-border rounded-xl py-3 pl-4 pr-16 text-sm font-bold focus:outline-none focus:bg-surface-container transition-colors disabled:opacity-50 text-on-background placeholder:text-on-surface-variant"
               />
               <button
                 onClick={handleSendMessage}
                 disabled={!chatInput.trim() || isSendingMessage}
-                className="absolute right-2 top-2 bottom-2 px-4 bg-primary text-white rounded-lg brutal-border shadow-[2px_2px_0px_0px_black] text-sm font-black hover:-translate-y-0.5 transition-transform disabled:opacity-50 disabled:hover:translate-y-0"
+                className="absolute right-2 top-2 bottom-2 px-4 bg-primary text-on-primary rounded-lg border-2 border-border shadow-[2px_2px_0px_0px_var(--color-border-base)] text-sm font-black hover:-translate-y-0.5 transition-transform disabled:opacity-50 disabled:hover:translate-y-0"
               >
                 Send
               </button>

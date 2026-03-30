@@ -179,10 +179,10 @@ export const ConceptMap = ({ setView, paperId }: ConceptMapProps) => {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-surface-dim">
+      <div className="flex-1 flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-8 h-8 text-primary animate-spin" />
-          <p className="text-sm text-on-background/50 font-medium">Building concept map...</p>
+          <p className="text-sm text-on-surface-variant font-medium">Building concept map...</p>
         </div>
       </div>
     );
@@ -203,15 +203,15 @@ export const ConceptMap = ({ setView, paperId }: ConceptMapProps) => {
 
   if (!data || data.nodes.length === 0) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-surface-dim">
-        <p className="text-sm text-on-background/40">No concept map data available</p>
+      <div className="flex-1 flex items-center justify-center bg-background">
+        <p className="text-sm text-on-surface-variant">No concept map data available</p>
       </div>
     );
   }
 
   return (
     <div className="flex-1 w-full h-full flex bg-background overflow-hidden relative">
-      <div ref={containerRef} className="flex-1 relative overflow-hidden bg-surface-dim dot-grid">
+      <div ref={containerRef} className="flex-1 relative overflow-hidden bg-background dot-grid">
         {/* SVG Canvas */}
         <svg
           ref={svgRef}
@@ -249,7 +249,7 @@ export const ConceptMap = ({ setView, paperId }: ConceptMapProps) => {
                   <path
                     d={`M ${sx} ${sy} Q ${cx} ${cy} ${tx} ${ty}`}
                     fill="none"
-                    stroke={isHighlighted ? '#000' : '#888'}
+                    stroke={isHighlighted ? 'var(--color-border-base)' : 'var(--color-on-surface-variant)'}
                     strokeWidth={isHighlighted ? 3 : 2}
                     opacity={selected ? (isHighlighted ? 1 : 0.15) : 0.6}
                   />
@@ -259,7 +259,7 @@ export const ConceptMap = ({ setView, paperId }: ConceptMapProps) => {
                       x={cx}
                       y={cy - 6}
                       textAnchor="middle"
-                      fill={isHighlighted ? '#000' : '#444'}
+                      fill={isHighlighted ? 'var(--color-on-background)' : 'var(--color-on-surface-variant)'}
                       fontSize={10}
                       fontFamily="Inter, sans-serif"
                       fontWeight={800}
@@ -294,16 +294,16 @@ export const ConceptMap = ({ setView, paperId }: ConceptMapProps) => {
                   <circle
                     r={r}
                     fill={style.bg}
-                    stroke="#000"
+                    stroke="var(--color-border-base)"
                     strokeWidth={isSelected ? 4 : 2}
                   />
                   {/* Type dot */}
-                  <circle cx={0} cy={-r + 8} r={4} fill={style.dot} stroke="#000" strokeWidth={1} />
+                  <circle cx={0} cy={-r + 8} r={4} fill={style.dot} stroke="var(--color-border-base)" strokeWidth={1} />
                   {/* Label */}
                   <text
                     y={2}
                     textAnchor="middle"
-                    fill="#000"
+                    fill="var(--color-on-background)"
                     fontSize={Math.min(12, r / 3)}
                     fontFamily="Inter, sans-serif"
                     fontWeight={900}
@@ -314,7 +314,7 @@ export const ConceptMap = ({ setView, paperId }: ConceptMapProps) => {
                   <text
                     y={16}
                     textAnchor="middle"
-                    fill="#000"
+                    fill="var(--color-on-background)"
                     fontSize={8}
                     fontFamily="Inter, sans-serif"
                     fontWeight={800}
@@ -329,103 +329,105 @@ export const ConceptMap = ({ setView, paperId }: ConceptMapProps) => {
         </svg>
 
         {/* Legend */}
-        <div className="absolute top-6 left-6 bg-surface brutal-border p-3 flex flex-col gap-2 shadow-[4px_4px_0_0_rgba(0,0,0,1)] z-10">
+        <div className="absolute top-6 left-6 bg-surface-container border-2 border-border p-3 flex flex-col gap-2 shadow-[4px_4px_0_0_var(--color-border-base)] z-10">
           {Object.entries(typeColors).map(([type, c]) => (
             <div key={type} className="flex items-center gap-2 text-xs">
-              <div className="w-4 h-4 rounded-full border-2 border-black" style={{ backgroundColor: c.dot }} />
-              <span className="font-bold text-gray-800 capitalize">{type}</span>
+              <div className="w-4 h-4 rounded-full border-2 border-border" style={{ backgroundColor: c.dot }} />
+              <span className="font-bold text-on-background capitalize">{type}</span>
             </div>
           ))}
         </div>
 
         {/* Zoom controls */}
         <div className="absolute bottom-6 left-6 flex gap-2 z-10">
-          <button onClick={() => setTransform(t => ({ ...t, scale: Math.min(3, t.scale * 1.2) }))} className="w-10 h-10 bg-surface brutal-border flex items-center justify-center font-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-transform">+</button>
-          <button onClick={() => setTransform(t => ({ ...t, scale: Math.max(0.3, t.scale / 1.2) }))} className="w-10 h-10 bg-surface brutal-border flex items-center justify-center font-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-transform">−</button>
+          <button onClick={() => setTransform(t => ({ ...t, scale: Math.min(3, t.scale * 1.2) }))} className="w-10 h-10 bg-surface-container border-2 border-border flex items-center justify-center font-black shadow-[4px_4px_0_0_var(--color-border-base)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_var(--color-border-base)] transition-transform text-on-background">+</button>
+          <button onClick={() => setTransform(t => ({ ...t, scale: Math.max(0.3, t.scale / 1.2) }))} className="w-10 h-10 bg-surface-container border-2 border-border flex items-center justify-center font-black shadow-[4px_4px_0_0_var(--color-border-base)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_var(--color-border-base)] transition-transform text-on-background">−</button>
           <button onClick={() => {
             if (containerRef.current) {
               const rect = containerRef.current.getBoundingClientRect();
               setTransform({ x: rect.width / 2, y: rect.height / 2, scale: 1 });
             }
-          }} className="w-10 h-10 bg-surface brutal-border flex items-center justify-center font-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-transform">⊙</button>
+          }} className="w-10 h-10 bg-surface-container border-2 border-border flex items-center justify-center font-black shadow-[4px_4px_0_0_var(--color-border-base)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_var(--color-border-base)] transition-transform text-on-background">⊙</button>
         </div>
       </div>
 
       {/* 2. Detail Panel (Contextual Right Sidebar) */}
       {selected && (
-        <div className="w-96 flex flex-col h-full bg-surface shrink-0 z-20 border-l-2 border-black">
-          <div className="p-6 flex-1 overflow-y-auto inner-shadow-brutal">
-            {/* Header */}
-            <div className="flex items-start justify-between mb-8">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-4 h-4 rounded-full border-2 border-black" style={{ backgroundColor: getTypeStyle(selected.type).dot }} />
-                  <span className="text-sm font-black uppercase tracking-wide text-gray-800">
-                    {selected.type || 'concept'}
-                  </span>
+        <div className="w-96 flex flex-col h-full bg-surface-container shrink-0 z-20 border-l-2 border-border">
+          <div className="flex-1 overflow-y-auto bg-background">
+            <div className="p-6">
+              {/* Header */}
+              <div className="flex items-start justify-between mb-8">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-4 h-4 rounded-full border-2 border-border" style={{ backgroundColor: getTypeStyle(selected.type).dot }} />
+                    <span className="text-sm font-black uppercase tracking-wide text-on-background">
+                      {selected.type || 'concept'}
+                    </span>
+                  </div>
+                  <h2 className="text-2xl font-black text-on-background leading-none">{selected.label}</h2>
                 </div>
-                <h2 className="text-2xl font-black text-on-background leading-none">{selected.label}</h2>
+                <button onClick={() => setSelected(null)} className="w-8 h-8 rounded-lg border-2 border-transparent hover:border-border text-on-background flex items-center justify-center transition-colors">
+                  <X className="w-5 h-5 font-bold" />
+                </button>
               </div>
-              <button onClick={() => setSelected(null)} className="w-8 h-8 rounded-lg border-2 border-transparent hover:border-black flex items-center justify-center transition-colors">
-                <X className="w-5 h-5 font-bold" />
-              </button>
-            </div>
 
-            {/* Explanation */}
-            <div className="mb-8">
-              <h3 className="text-sm font-black uppercase tracking-wide text-primary mb-2">Explanation</h3>
-              <p className="text-base font-medium text-gray-800 leading-relaxed bg-surface-dim brutal-border p-4 shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
-                {selected.explanation || 'No explanation available.'}
-              </p>
-            </div>
-
-            {/* Key Equation */}
-            {selected.key_equation && (
+              {/* Explanation */}
               <div className="mb-8">
-                <h3 className="text-sm font-black uppercase tracking-wide text-primary mb-2">Key Equation</h3>
-                <div className="bg-primary hover:bg-primary-hover text-white brutal-border p-4 font-mono font-bold shadow-[4px_4px_0_0_rgba(0,0,0,1)] overflow-x-auto">
-                  {selected.key_equation}
-                </div>
+                <h3 className="text-sm font-black uppercase tracking-wide text-primary mb-2">Explanation</h3>
+                <p className="text-base font-medium text-on-background leading-relaxed bg-surface-container border-2 border-border p-4 shadow-[4px_4px_0_0_var(--color-border-base)]">
+                  {selected.explanation || 'No explanation available.'}
+                </p>
               </div>
-            )}
 
-            {/* Connections */}
-            <div className="mb-8">
-              <h3 className="text-sm font-black uppercase tracking-wide text-primary mb-3">Connections</h3>
-              <div className="space-y-4">
-                {getConnections(selected.id).map((conn, i) => (
-                  <button
-                    key={i}
-                    onClick={() => conn.other && setSelected(conn.other as SimNode)}
-                    className="w-full flex items-center gap-3 p-4 bg-white brutal-border shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-transform text-left"
-                  >
-                    <div className="w-3 h-3 rounded-full border-2 border-black shrink-0" style={{ backgroundColor: getTypeStyle(conn.other?.type).dot }} />
-                    <div className="flex-1 min-w-0">
-                      <div className="text-base font-bold text-on-background truncate">{conn.other?.label}</div>
-                      <div className="text-xs font-black text-gray-500 uppercase flex items-center gap-1 mt-1">
-                        {conn.direction === 'outgoing' ? (
-                          <><ArrowRight className="w-3 h-3" />{predicateLabels[conn.predicate] || conn.predicate}</>
-                        ) : (
-                          <><span className="rotate-180 inline-block"><ArrowRight className="w-3 h-3" /></span>{predicateLabels[conn.predicate] || conn.predicate}</>
-                        )}
+              {/* Key Equation */}
+              {selected.key_equation && (
+                <div className="mb-8">
+                  <h3 className="text-sm font-black uppercase tracking-wide text-primary mb-2">Key Equation</h3>
+                  <div className="bg-primary hover:bg-primary text-on-primary border-2 border-border p-4 font-mono font-bold shadow-[4px_4px_0_0_var(--color-border-base)] overflow-x-auto">
+                    {selected.key_equation}
+                  </div>
+                </div>
+              )}
+
+              {/* Connections */}
+              <div className="mb-8">
+                <h3 className="text-sm font-black uppercase tracking-wide text-primary mb-3">Connections</h3>
+                <div className="space-y-4">
+                  {getConnections(selected.id).map((conn, i) => (
+                    <button
+                      key={i}
+                      onClick={() => conn.other && setSelected(conn.other as SimNode)}
+                      className="w-full flex items-center gap-3 p-4 bg-surface-container border-2 border-border shadow-[4px_4px_0_0_var(--color-border-base)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_var(--color-border-base)] transition-transform text-left"
+                    >
+                      <div className="w-3 h-3 rounded-full border-2 border-border shrink-0" style={{ backgroundColor: getTypeStyle(conn.other?.type).dot }} />
+                      <div className="flex-1 min-w-0">
+                        <div className="text-base font-bold text-on-background truncate">{conn.other?.label}</div>
+                        <div className="text-xs font-black text-on-surface-variant uppercase flex items-center gap-1 mt-1">
+                          {conn.direction === 'outgoing' ? (
+                            <><ArrowRight className="w-3 h-3" />{predicateLabels[conn.predicate] || conn.predicate}</>
+                          ) : (
+                            <><span className="rotate-180 inline-block"><ArrowRight className="w-3 h-3" /></span>{predicateLabels[conn.predicate] || conn.predicate}</>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </button>
-                ))}
-                {getConnections(selected.id).length === 0 && (
-                  <p className="font-bold text-gray-400 italic bg-surface-dim p-4 brutal-border text-center">No direct connections</p>
-                )}
+                    </button>
+                  ))}
+                  {getConnections(selected.id).length === 0 && (
+                    <p className="font-bold text-on-surface-variant italic bg-background p-4 border-2 border-border text-center">No direct connections</p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
           
-          <div className="p-6 bg-surface border-t-2 border-black">
+          <div className="p-6 bg-surface-container border-t-2 border-border">
             {/* Generate Animation */}
             <button
               onClick={() => setView('manim')}
-              className="w-full bg-primary text-white p-4 brutal-border shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-base font-black flex items-center justify-center gap-2 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-transform"
+              className="w-full bg-primary text-on-primary p-4 border-2 border-border shadow-[4px_4px_0px_0px_var(--color-border-base)] text-base font-black flex items-center justify-center gap-2 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_var(--color-border-base)] transition-transform"
             >
-              <Zap className="w-5 h-5 fill-white" />
+              <Zap className="w-5 h-5 fill-on-primary" />
               Generate Animation
             </button>
           </div>
