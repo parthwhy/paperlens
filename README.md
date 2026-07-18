@@ -17,6 +17,30 @@
 
 <!-- TODO(Parth): drop a 10–15s demo GIF or 3 screenshots here — landing page, chat with citations, concept map. This is the single highest-leverage addition for recruiter scan-time. -->
 
+## 📸 Feature Tour
+
+| # | Feature | What you see |
+| --- | --- | --- |
+| 1 | **Landing & Features** | Landing page with the ingest box, "Try Demo", and a full feature grid. |
+| 2 | **Smart Reader + PDF** | The full paper PDF with citation jumping and concept highlighting. |
+| 3 | **Select-to-Explain** | Highlight any sentence → an instant, plain-English explanation tooltip. |
+| 4 | **Concept Map** | A D3.js force-directed graph of how the paper's concepts relate. |
+| 5 | **RAG Chat** | Ask anything; answers are grounded with section + page citations. |
+| 6 | **Manim Animation** | A playable animation generated from the paper's core ideas. |
+
+<p align="center">
+  <img src="docs/screenshots/01-landing.png" alt="1. Landing page" width="48%">
+  <img src="docs/screenshots/02-reader.png" alt="2. Smart reader" width="48%">
+</p>
+<p align="center">
+  <img src="docs/screenshots/03-tooltip.png" alt="3. Select-to-explain" width="48%">
+  <img src="docs/screenshots/04-conceptmap.png" alt="4. Concept map" width="48%">
+</p>
+<p align="center">
+  <img src="docs/screenshots/05-chat.png" alt="5. RAG chat" width="48%">
+  <img src="docs/screenshots/06-animation.png" alt="6. Manim animation" width="48%">
+</p>
+
 ---
 
 ## Why PaperLens
@@ -41,7 +65,7 @@ Reading a dense ML paper cold takes hours — tracing notation, re-reading metho
 | 💬 **Hover Explanations** | Select any sentence → plain-English explanation + analogy, generated in context |
 | 🕸️ **Concept Map** | Auto-generated force-directed graph (D3.js) of how methods, datasets, and metrics relate |
 | 📄 **Inline PDF Viewer** | Read the original PDF with zoom/pagination and a draggable, resizable AI chat panel |
-| 🎬 **Manim Animations** *(in progress)* | LLM-generated visual walkthroughs of complex concepts |
+| 🎬 **Manim Animations** | LLM-generated visual walkthroughs of complex concepts (live demo video ships in the client) |
 
 ## 🏗 Architecture
 
