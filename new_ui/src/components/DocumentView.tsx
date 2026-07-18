@@ -12,8 +12,10 @@ import { demoChat } from '../services/groq';
 import { hasGroqKey, setGroqKey } from '../services/llm';
 import { Key } from 'lucide-react';
 
-// Configure PDF.js worker - must match react-pdf's pdfjs-dist version (5.4.296)
-pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@5.4.296/build/pdf.worker.min.mjs`;
+// Bundle the PDF.js worker locally so the version always matches react-pdf's
+// pdfjs-dist and the demo works fully offline (no external CDN dependency).
+import PdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+pdfjs.GlobalWorkerOptions.workerSrc = PdfWorker;
 
 interface DocumentViewProps {
   paperId: string | null;
@@ -218,9 +220,11 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
       setPdfUrl('');
       return;
     }
-    // In demo mode use the public arXiv PDF directly (no backend needed).
+    // In demo mode serve the bundled PDF from the app's own base path
+    // (works on GitHub Pages with the repo subpath, no backend needed).
     if (isDemoMode() && paperId === DEMO_PAPER_ID) {
-      setPdfUrl(demoMetadata.pdf_url);
+      const base = import.meta.env.BASE_URL || '/';
+      setPdfUrl(`${base}demo_1706.03762.pdf`.replace(/\/{2,}/g, '/'));
       return;
     }
     const base = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api/v1';
