@@ -69,3 +69,6 @@ desktop.ini
 # Project specific
 mnt/
 gitguide
+
+# Manim render artifacts
+media/

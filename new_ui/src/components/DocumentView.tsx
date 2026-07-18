@@ -7,6 +7,10 @@ import type { ChatMessage, CitedChunk } from '../types';
 import { useTooltip } from '../hooks/useTooltip';
 import { SelectionTooltip } from './SelectionTooltip';
 import { cn } from '../lib/utils';
+import { isDemoMode, DEMO_PAPER_ID, demoMetadata } from '../services/demo';
+import { demoChat } from '../services/groq';
+import { hasGroqKey, setGroqKey } from '../services/llm';
+import { Key } from 'lucide-react';
 
 // Configure PDF.js worker - must match react-pdf's pdfjs-dist version (5.4.296)
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@5.4.296/build/pdf.worker.min.mjs`;
@@ -39,6 +43,21 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
   // Tooltip state
   const pdfContainerRef = useRef<HTMLDivElement>(null);
   const { tooltip, dismiss, fetchExplanation } = useTooltip(paperId || '', pdfContainerRef);
+
+  // Demo-mode Groq key state (so the "Add Groq Key" button shows only when needed)
+  const [hasKey, setHasKey] = useState<boolean>(() => hasGroqKey());
+  const [keyInputOpen, setKeyInputOpen] = useState(false);
+  const [keyDraft, setKeyDraft] = useState('');
+  const [showHint, setShowHint] = useState(true);
+
+  const handleSaveKey = () => {
+    const v = keyDraft.trim();
+    if (!v) return;
+    setGroqKey(v);
+    setHasKey(true);
+    setKeyInputOpen(false);
+    setKeyDraft('');
+  };
 
   // Scroll chat to bottom when new messages arrive
   useEffect(() => {
@@ -125,17 +144,38 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
 
     try {
       console.log('📤 Calling API...');
-      const response = await api.sendChatMessage(paperId, message, chatMessages);
+      let response: { answer: string; citations?: CitedChunk[] };
+
+      // Demo mode: run RAG entirely in the browser via the user's Groq key.
+      if (isDemoMode() && paperId === DEMO_PAPER_ID) {
+        if (!hasGroqKey()) {
+          throw new Error(
+            'NO_KEY: Add your Groq API key (Settings) to enable the demo chat.'
+          );
+        }
+        const demo = await demoChat(message, chatMessages);
+        response = {
+          answer: demo.answer,
+          citations: demo.citations.map((c) => ({
+            text: c.text,
+            section: c.section,
+            page: c.page,
+          })),
+        };
+      } else {
+        response = await api.sendChatMessage(paperId, message, chatMessages);
+      }
+
       console.log('📤 API response:', response);
       console.log('📤 Citations received:', response.citations);
-      
+
       // Log each citation's page number
       if (response.citations) {
         response.citations.forEach((cit: CitedChunk, idx: number) => {
           console.log(`📄 Citation ${idx + 1}: page=${cit.page}, section=${cit.section}`);
         });
       }
-      
+
       const assistantMessage: ChatMessage = {
         role: 'assistant',
         content: response.answer,
@@ -145,9 +185,18 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
       console.log('📤 Assistant message added to chat');
     } catch (err) {
       console.error('❌ Failed to send message:', err);
+      const msg = err instanceof Error ? err.message : String(err);
+      const isNoKey = msg.startsWith('NO_KEY');
+      const isGroq = msg.includes('Groq error');
       const errorMessage: ChatMessage = {
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.',
+        content: isNoKey
+          ? '🔑 Add your free Groq API key in Settings (top-right) to chat with the demo paper. Get one at console.groq.com — your key stays only in your browser.'
+          : isGroq
+            ? '⚠️ Couldn\'t reach Groq. This is usually a missing/invalid key or free-tier rate limit — check your key in Settings and try again. (Not a site error.)'
+            : isDemoMode()
+              ? 'The AI chat needs the live backend. Click "Try Demo" works for reading — connect the backend (render deployment) to chat and generate animations.'
+              : 'Sorry, I encountered an error. Please try again.',
       };
       setChatMessages(prev => [...prev, errorMessage]);
     } finally {
@@ -169,7 +218,13 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
       setPdfUrl('');
       return;
     }
-    setPdfUrl(`http://127.0.0.1:8000/api/v1/paper/${paperId}/pdf`);
+    // In demo mode use the public arXiv PDF directly (no backend needed).
+    if (isDemoMode() && paperId === DEMO_PAPER_ID) {
+      setPdfUrl(demoMetadata.pdf_url);
+      return;
+    }
+    const base = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api/v1';
+    setPdfUrl(`${base}/paper/${paperId}/pdf`);
   }, [paperId]);
 
   // Show message when no paper is loaded
@@ -259,6 +314,11 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
             <span className="font-bold text-on-background">
               {numPages} {numPages === 1 ? 'page' : 'pages'}
             </span>
+            {isDemoMode() && (
+              <span className="text-xs font-black uppercase tracking-widest px-2 py-1 bg-yellow-300 border-2 border-black rounded shadow-[2px_2px_0_0_rgba(0,0,0,1)]">
+                Demo Mode
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
@@ -282,6 +342,37 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
             <span className="text-xs font-bold text-gray-500 ml-2">Ctrl+Scroll</span>
           </div>
 
+          {isDemoMode() && !hasKey && (
+            <div className="flex items-center gap-2">
+              {keyInputOpen ? (
+                <>
+                  <input
+                    type="password"
+                    value={keyDraft}
+                    onChange={(e) => setKeyDraft(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') handleSaveKey(); }}
+                    placeholder="Paste Groq API key"
+                    className="w-56 px-3 py-2 text-sm font-bold brutal-border rounded-lg bg-white"
+                    autoFocus
+                  />
+                  <button
+                    onClick={handleSaveKey}
+                    className="px-3 py-2 bg-black text-white font-bold rounded-lg brutal-border hover:-translate-y-0.5 transition-transform"
+                  >
+                    Save
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => setKeyInputOpen(true)}
+                  className="px-4 py-2 bg-yellow-400 text-black font-black rounded-lg brutal-border shadow-[3px_3px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-transform flex items-center gap-2"
+                >
+                  <Key className="w-4 h-4" /> Add Groq Key
+                </button>
+              )}
+            </div>
+          )}
+
           {!isChatOpen && (
             <button
               onClick={() => setIsChatOpen(true)}
@@ -291,6 +382,21 @@ export const DocumentView = ({ paperId }: DocumentViewProps) => {
             </button>
           )}
         </div>
+
+        {/* Feature-discovery hint */}
+        {showHint && (
+          <div className="flex items-center gap-3 px-6 py-2.5 bg-yellow-200 border-b-2 border-black text-sm font-bold">
+            <span>💡 Tip: <span className="underline decoration-2">select any text</span> in the paper to get an instant explanation.</span>
+            {!hasKey && <span className="text-gray-700">Add your free Groq key (top-right) for AI-powered explanations & chat.</span>}
+            <button
+              onClick={() => setShowHint(false)}
+              className="ml-auto w-6 h-6 flex items-center justify-center rounded hover:bg-yellow-300"
+              title="Dismiss"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
 
         {/* PDF Viewer - Scrollable All Pages */}
         <div ref={pdfScrollContainerRef} className="flex-1 overflow-auto flex justify-center p-8 bg-surface-dim">

@@ -78,4 +78,5 @@ export interface PaperMetadata {
   abstract: string;
   ingested_at?: string;
   message?: string;
+  pdf_url?: string;
 }

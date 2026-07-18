@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { X, FileText, ChevronRight, Send, Play, Loader2 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { api } from '../services/api';
+import { API_BASE_URL_RESOLVED, BACKEND_CONFIGURED_FLAG } from '../services/api';
 import type { View, AnimationJob } from '../types';
 
 interface ManimDashboardProps {
@@ -31,6 +32,35 @@ interface StoredAnimation {
 
 const STORAGE_KEY = 'paperlens_animations';
 
+// Hardcoded demo animation (works fully offline / on GitHub Pages).
+// Shows the structure of a neural network: input, hidden, and output layers.
+const DEMO_ANIMATION: StoredAnimation = {
+  job_id: 'demo-neural-network',
+  concept: 'Neural Network Structure',
+  status: 'ready',
+  video_url: 'demo_neural_network.mp4',
+  timestamp: 0,
+};
+
+const DEMO_CONCEPT: Concept = {
+  id: 'neural_network_structure',
+  label: 'Neural Network Structure',
+  type: 'concept',
+  explanation:
+    'A neural network is organized into layers of neurons. The input layer receives the raw features, one or more hidden layers transform that signal through weighted connections and non-linear activations, and the output layer produces the final prediction. Information flows left-to-right: input → hidden → output, with every neuron in one layer connected to every neuron in the next.',
+  key_equation: null,
+  visual_hint: {
+    metaphor:
+      'Think of it as a pipeline: raw data enters on the left, gets reshaped through hidden stages, and exits as a prediction on the right.',
+    steps: [
+      'Input layer: each node is one feature of the data.',
+      'Hidden layers: weighted sums + activation functions transform the signal.',
+      'Output layer: produces the final class or value.',
+    ],
+  },
+  frequency: 1,
+};
+
 export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
   const [concepts, setConcepts] = useState<Concept[]>([]);
   const [selectedConcept, setSelectedConcept] = useState<Concept | null>(null);
@@ -44,26 +74,49 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        setAnimations(parsed);
+        // Always keep the offline demo video present alongside any stored animations.
+        const withDemo = parsed.some((a: StoredAnimation) => a.job_id === 'demo-neural-network')
+          ? parsed
+          : [DEMO_ANIMATION, ...parsed];
+        setAnimations(withDemo);
       } catch (e) {
         console.error('Failed to parse stored animations:', e);
+        setAnimations([DEMO_ANIMATION]);
       }
+    } else {
+      // No stored animations — show the offline demo video so the page is never empty.
+      setAnimations([DEMO_ANIMATION]);
     }
   }, []);
 
   // Load concepts when paperId changes
   useEffect(() => {
-    if (!paperId) return;
-    
+    if (!paperId || !BACKEND_CONFIGURED_FLAG) {
+      // No backend paper / demo deploy — fill the studio with the offline demo concept.
+      setConcepts([DEMO_CONCEPT]);
+      setSelectedConcept(DEMO_CONCEPT);
+      setLoadingConcepts(false);
+      return;
+    }
+
     const loadConcepts = async () => {
       setLoadingConcepts(true);
       setError('');
       try {
         const response = await api.getPaperConcepts(paperId);
-        setConcepts(response.concepts || []);
+        const list = response.concepts || [];
+        // Always include the offline demo concept so the studio is usable without a backend.
+        const withDemo = list.some(c => c.id === DEMO_CONCEPT.id)
+          ? list
+          : [DEMO_CONCEPT, ...list];
+        setConcepts(withDemo);
+        setSelectedConcept(DEMO_CONCEPT);
       } catch (err) {
         console.error('Failed to load concepts:', err);
-        setError('Failed to load concepts from paper');
+        // Offline / no backend: show the demo concept so the studio is usable.
+        setConcepts([DEMO_CONCEPT]);
+        setSelectedConcept(DEMO_CONCEPT);
+        setError('');
       } finally {
         setLoadingConcepts(false);
       }
@@ -272,6 +325,22 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
                   {selectedConcept.explanation}
                 </div>
 
+                {/* Demo video — plays inline in the center panel (fully offline). */}
+                {selectedConcept.id === DEMO_CONCEPT.id && (() => {
+                  const demoSrc = `${import.meta.env.BASE_URL}demo_neural_network.mp4`.replace(/\/{2,}/g, '/');
+                  return (
+                    <div className="brutal-border shadow-[4px_4px_0_0_rgba(0,0,0,1)] bg-black p-1">
+                      <video
+                        src={demoSrc}
+                        controls
+                        autoPlay
+                        loop
+                        className="w-full bg-black outline-none"
+                      />
+                    </div>
+                  );
+                })()}
+
                 {selectedConcept.key_equation && (
                   <div className="bg-primary text-white brutal-border p-6 shadow-[4px_4px_0_0_rgba(0,0,0,1)] overflow-x-auto">
                     <div className="text-xs font-black uppercase tracking-widest text-white/70 mb-3">
@@ -353,20 +422,29 @@ export const ManimDashboard = ({ setView, paperId }: ManimDashboardProps) => {
 
                     {anim.status === 'ready' && anim.video_url && (
                       <div className="space-y-3">
-                        <div className="brutal-border shadow-[4px_4px_0_0_rgba(0,0,0,1)] bg-black p-1">
-                          <video
-                            src={`http://127.0.0.1:8000${anim.video_url}`}
-                            controls
-                            className="w-full bg-black outline-none"
-                          />
-                        </div>
-                        <a
-                          href={`http://127.0.0.1:8000${anim.video_url}`}
-                          download
-                          className="block w-full text-center px-4 py-3 bg-[#10b981] hover:bg-[#059669] text-black brutal-border shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-transform text-xs font-black uppercase tracking-widest"
-                        >
-                          Download MP4
-                        </a>
+                        {(() => {
+                          const src = anim.job_id === 'demo-neural-network'
+                            ? `${import.meta.env.BASE_URL}${anim.video_url}`.replace(/\/{2,}/g, '/')
+                            : `${API_BASE_URL_RESOLVED.replace(/\/api\/v1$/, '')}${anim.video_url}`;
+                          return (
+                            <>
+                              <div className="brutal-border shadow-[4px_4px_0_0_rgba(0,0,0,1)] bg-black p-1">
+                                <video
+                                  src={src}
+                                  controls
+                                  className="w-full bg-black outline-none"
+                                />
+                              </div>
+                              <a
+                                href={src}
+                                download
+                                className="block w-full text-center px-4 py-3 bg-[#10b981] hover:bg-[#059669] text-black brutal-border shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-transform text-xs font-black uppercase tracking-widest"
+                              >
+                                Download MP4
+                              </a>
+                            </>
+                          );
+                        })()}
                       </div>
                     )}
 

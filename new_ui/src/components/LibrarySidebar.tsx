@@ -18,8 +18,9 @@ export function LibrarySidebar({ currentPaperId, onSelectPaper }: LibrarySidebar
         setLoading(true);
         const res = await api.getRecentPapers(30);
         setPapers(res.papers);
-      } catch (err) {
-        console.error("Failed to load papers:", err);
+      } catch {
+        // Backend not running (e.g. demo mode) — just show empty library.
+        setPapers([]);
       } finally {
         setLoading(false);
       }

@@ -1,4 +1,7 @@
 import { useState, useEffect, useCallback, useRef, RefObject } from "react";
+import { isDemoMode, DEMO_PAPER_ID } from "../services/demo";
+import { demoTooltip } from "../services/groq";
+import { hasGroqKey } from "../services/llm";
 
 interface TooltipState {
   visible: boolean;
@@ -48,17 +51,34 @@ export function useTooltip(paperId: string, containerRef: RefObject<HTMLElement>
     abortRef.current = new AbortController();
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/v1/tooltip", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          paper_id: paperId,
-          sentence: state.sentence,
-          term: selectedTermRef.current,
-        }),
-        signal: abortRef.current.signal,
-      });
-      const data = await res.json();
+      let data: { explanation: string; analogy?: string | null; related_terms?: string[] };
+
+      // Demo mode: generate the explanation in-browser via Groq (if key set).
+      if (isDemoMode() && paperId === DEMO_PAPER_ID) {
+        if (!hasGroqKey()) {
+          data = {
+            explanation:
+              "🔑 Add your Groq API key in Settings to get AI explanations for any sentence.",
+            analogy: null,
+            related_terms: [],
+          };
+        } else {
+          data = await demoTooltip(state.sentence, selectedTermRef.current);
+        }
+      } else {
+        const res = await fetch("http://127.0.0.1:8000/api/v1/tooltip", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            paper_id: paperId,
+            sentence: state.sentence,
+            term: selectedTermRef.current,
+          }),
+          signal: abortRef.current.signal,
+        });
+        data = await res.json();
+      }
+
       setState((prev: TooltipState) =>
         prev.visible
           ? {
@@ -72,12 +92,15 @@ export function useTooltip(paperId: string, containerRef: RefObject<HTMLElement>
       );
     } catch (err: any) {
       if (err.name !== "AbortError") {
+        const isNoKey = err instanceof Error && err.message.startsWith("NO_KEY");
         setState((prev: TooltipState) =>
           prev.visible
             ? {
                 ...prev,
                 loading: false,
-                explanation: "Failed to load explanation.",
+                explanation: isNoKey
+                  ? "🔑 Add your free Groq API key in Settings (top-right) to get instant AI explanations for any sentence."
+                  : "Couldn't reach Groq just now. Check your key in Settings or try again in a moment.",
                 analogy: null,
                 relatedTerms: [],
               }

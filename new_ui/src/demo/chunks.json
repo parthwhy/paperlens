@@ -1,0 +1,80 @@
+{
+  "paper_id": "1706.03762",
+  "sections": [
+    {
+      "section": "Abstract",
+      "chunks": [
+        {
+          "chunk_id": "abs-1",
+          "text": "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely.",
+          "page": 1
+        },
+        {
+          "chunk_id": "abs-2",
+          "text": "Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature.",
+          "page": 1
+        }
+      ]
+    },
+    {
+      "section": "1. Introduction",
+      "chunks": [
+        {
+          "chunk_id": "intro-1",
+          "text": "Recurrent neural networks, in particular long short-term memory and gated recurrent networks, have been firmly established as state-of-the-art approaches in sequence modeling and transduction problems such as language modeling and machine translation. Numerous efforts have since continued to push the boundaries of recurrent language models and encoder-decoder architectures.",
+          "page": 1
+        },
+        {
+          "chunk_id": "intro-2",
+          "text": "Recurrent models typically factor computation along the symbol positions of the input and output sequences. Aligning the positions to steps in computation time, they generate a sequence of hidden states h_t, as a function of the previous hidden state h_{t-1} and the input for position t. This inherently sequential nature precludes parallelization within training examples, which becomes critical at longer sequence lengths, as memory constraints limit batching across examples.",
+          "page": 1
+        },
+        {
+          "chunk_id": "intro-3",
+          "text": "In this work we propose the Transformer, a model architecture relying entirely on attention mechanisms, dispensing with recurrence and convolutions entirely. The Transformer allows for significantly more parallelization and can reach a new state of the art in translation quality while requiring only a fraction of the training cost of competing models.",
+          "page": 1
+        }
+      ]
+    },
+    {
+      "section": "3. Model Architecture",
+      "chunks": [
+        {
+          "chunk_id": "arch-1",
+          "text": "An attention function can be described as mapping a query and a set of key-value pairs to an output, where the query, keys, values, and output are all vectors. The output is computed as a weighted sum of the values, where the weight assigned to each value is computed by a compatibility function of the query with the corresponding key.",
+          "page": 3
+        },
+        {
+          "chunk_id": "arch-2",
+          "text": "We call our particular attention 'Scaled Dot-Product Attention'. The input consists of queries and keys of dimension d_k, and values of dimension d_v. We compute the dot products of the query with all keys, divide each by sqrt(d_k), and apply a softmax function to obtain the weights on the values.",
+          "page": 3
+        },
+        {
+          "chunk_id": "arch-3",
+          "text": "Instead of performing a single attention function with d_model-dimensional keys, values and queries, we found it beneficial to linearly project the queries, keys and values h times with different, learned linear projections to d_k, d_k and d_v dimensions. We call this Multi-Head Attention. Multi-head attention allows the model to jointly attend to information from different representation subspaces at different positions.",
+          "page": 4
+        },
+        {
+          "chunk_id": "arch-4",
+          "text": "Since our model contains no recurrence and no convolution, in order for the model to make use of the order of the sequence, we must inject some information about the relative or absolute position of the tokens in the sequence. To this end, we add positional encodings to the input embeddings at the bottoms of the encoder and decoder stacks.",
+          "page": 5
+        }
+      ]
+    },
+    {
+      "section": "5. Results",
+      "chunks": [
+        {
+          "chunk_id": "res-1",
+          "text": "On the WMT 2014 English-to-German translation task, the big transformer model outperforms the best previously reported models (including ensembles) by more than 2.0 BLEU, establishing a new state-of-the-art BLEU score of 28.4. The configuration of the big model is listed in the bottom line of Table 3.",
+          "page": 8
+        },
+        {
+          "chunk_id": "res-2",
+          "text": "The Transformer (big) costs only a fraction of the training cost of the best models from the literature. The quality of the model, however, rises smoothly with the amount of training data and the size of the model. The training regime is described in the next paragraph.",
+          "page": 9
+        }
+      ]
+    }
+  ]
+}

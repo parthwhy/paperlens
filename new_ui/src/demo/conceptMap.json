@@ -1,0 +1,120 @@
+{
+  "nodes": [
+    {
+      "id": "transformer",
+      "label": "Transformer",
+      "type": "method",
+      "description": "A sequence transduction architecture based solely on attention mechanisms, removing recurrence and convolutions.",
+      "explanation": "The Transformer is a neural network that translates sequences (like sentences) into other sequences without using recurrence. Instead of processing words one-by-one in order, it looks at the whole input at once using attention, which makes it far more parallelizable and faster to train.",
+      "key_equation": "h = Attention(Q, K, V) = softmax(QK^T / sqrt(d_k)) V",
+      "importance": 10,
+      "frequency": 12
+    },
+    {
+      "id": "self_attention",
+      "label": "Self-Attention",
+      "type": "method",
+      "description": "Mechanism allowing each position to attend to all positions in the same sequence.",
+      "explanation": "Self-attention lets every word in a sentence look at every other word (including itself) to build a context-aware representation. The word 'it' can directly look at 'animal' to resolve what 'it' refers to, no matter how far apart they are.",
+      "key_equation": "Attention(Q, K, V) = softmax(QK^T / sqrt(d_k)) V",
+      "importance": 9,
+      "frequency": 10
+    },
+    {
+      "id": "multi_head",
+      "label": "Multi-Head Attention",
+      "type": "method",
+      "description": "Runs attention in parallel over several subspaces to capture different relational patterns.",
+      "explanation": "Instead of one attention operation, the model runs several in parallel ('heads'). Each head learns to focus on a different kind of relationship — one on syntax, another on coreference, etc. Their outputs are concatenated and linearly projected.",
+      "key_equation": "MultiHead(Q,K,V) = Concat(head_1,...,head_h) W^O",
+      "importance": 8,
+      "frequency": 8
+    },
+    {
+      "id": "positional_encoding",
+      "label": "Positional Encoding",
+      "type": "method",
+      "description": "Adds position information to input embeddings since attention is order-agnostic.",
+      "explanation": "Because attention looks at all words at once, the model loses word order. Positional encodings add a fixed sinusoidal signal to each word's embedding so the network knows where each word sits in the sequence.",
+      "key_equation": "PE(pos,2i) = sin(pos / 10000^(2i/d))",
+      "importance": 7,
+      "frequency": 6
+    },
+    {
+      "id": "encoder",
+      "label": "Encoder Stack",
+      "type": "method",
+      "description": "Stack of N identical layers: multi-head self-attention + feed-forward network.",
+      "explanation": "The encoder is a stack of 6 identical layers. Each layer has two sub-layers: multi-head self-attention and a position-wise feed-forward network, wrapped in residual connections and layer normalization.",
+      "key_equation": null,
+      "importance": 6,
+      "frequency": 5
+    },
+    {
+      "id": "decoder",
+      "label": "Decoder Stack",
+      "type": "method",
+      "description": "Stack of N layers with masked self-attention, encoder-decoder attention, and feed-forward.",
+      "explanation": "The decoder also stacks 6 layers but adds a third sub-layer that attends to the encoder's output. Its self-attention is masked so a position can only attend to earlier positions, preserving autoregressive generation.",
+      "key_equation": null,
+      "importance": 6,
+      "frequency": 5
+    },
+    {
+      "id": "scaled_dot_product",
+      "label": "Scaled Dot-Product",
+      "type": "concept",
+      "description": "Core attention scoring using dot products scaled by sqrt(d_k).",
+      "explanation": "The attention score is the dot product of query and key vectors, scaled by the square root of the key dimension to keep gradients stable, then passed through softmax to weight the values.",
+      "key_equation": "score = softmax(QK^T / sqrt(d_k))",
+      "importance": 7,
+      "frequency": 4
+    },
+    {
+      "id": "feed_forward",
+      "label": "Feed-Forward Network",
+      "type": "method",
+      "description": "Position-wise fully connected network applied independently to each position.",
+      "explanation": "After attention, each position passes through a two-layer feed-forward network with a ReLU activation in between. It is applied identically and independently at every position.",
+      "key_equation": "FFN(x) = max(0, xW_1 + b_1) W_2 + b_2",
+      "importance": 5,
+      "frequency": 3
+    },
+    {
+      "id": "bleu",
+      "label": "BLEU Score",
+      "type": "metric",
+      "description": "Evaluation metric for machine translation quality.",
+      "explanation": "BLEU measures how close a machine translation is to human references by counting overlapping n-grams. The Transformer reached 28.4 BLEU (En-De) and 41.8 BLEU (En-Fr), beating previous best models.",
+      "key_equation": null,
+      "importance": 5,
+      "frequency": 3
+    },
+    {
+      "id": "wmt2014",
+      "label": "WMT 2014",
+      "type": "dataset",
+      "description": "Machine translation benchmark used to evaluate the model.",
+      "explanation": "WMT 2014 is a standard dataset for English-to-German and English-to-French translation. The paper reports new state-of-the-art results on both tasks using this dataset.",
+      "key_equation": null,
+      "importance": 4,
+      "frequency": 2
+    }
+  ],
+  "edges": [
+    { "source": "transformer", "target": "self_attention", "predicate": "uses", "label": "uses" },
+    { "source": "transformer", "target": "multi_head", "predicate": "uses", "label": "uses" },
+    { "source": "transformer", "target": "positional_encoding", "predicate": "introduces", "label": "introduces" },
+    { "source": "transformer", "target": "encoder", "predicate": "part_of", "label": "part of" },
+    { "source": "transformer", "target": "decoder", "predicate": "part_of", "label": "part of" },
+    { "source": "multi_head", "target": "self_attention", "predicate": "introduces", "label": "introduces" },
+    { "source": "self_attention", "target": "scaled_dot_product", "predicate": "uses", "label": "uses" },
+    { "source": "encoder", "target": "self_attention", "predicate": "uses", "label": "uses" },
+    { "source": "encoder", "target": "feed_forward", "predicate": "uses", "label": "uses" },
+    { "source": "decoder", "target": "multi_head", "predicate": "uses", "label": "uses" },
+    { "source": "decoder", "target": "encoder", "predicate": "evaluates_on", "label": "attends to" },
+    { "source": "decoder", "target": "feed_forward", "predicate": "uses", "label": "uses" },
+    { "source": "transformer", "target": "wmt2014", "predicate": "evaluates_on", "label": "evaluated on" },
+    { "source": "transformer", "target": "bleu", "predicate": "outperforms", "label": "outperforms" }
+  ]
+}
