@@ -11,35 +11,77 @@
 [![ChromaDB](https://img.shields.io/badge/Vector%20DB-ChromaDB-purple?style=flat)](https://www.trychroma.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat)](LICENSE)
 
-[Features](#-features) • [Architecture](#-architecture) • [Engineering Highlights](#-engineering-highlights) • [Setup](#-setup) • [API](#-api-reference)
+**[🚀 Live Demo](https://parthwhy.github.io/paperlens/)** • [Features](#-features) • [Architecture](#-architecture) • [Engineering Highlights](#-engineering-highlights) • [Setup](#-setup) • [API](#-api-reference)
 
 </div>
 
-<!-- TODO(Parth): drop a 10–15s demo GIF or 3 screenshots here — landing page, chat with citations, concept map. This is the single highest-leverage addition for recruiter scan-time. -->
+---
 
-## 📸 Feature Tour
+## 🎬 Demo
 
-| # | Feature | What you see |
-| --- | --- | --- |
-| 1 | **Landing & Features** | Landing page with the ingest box, "Try Demo", and a full feature grid. |
-| 2 | **Smart Reader + PDF** | The full paper PDF with citation jumping and concept highlighting. |
-| 3 | **Select-to-Explain** | Highlight any sentence → an instant, plain-English explanation tooltip. |
-| 4 | **Concept Map** | A D3.js force-directed graph of how the paper's concepts relate. |
-| 5 | **RAG Chat** | Ask anything; answers are grounded with section + page citations. |
-| 6 | **Manim Animation** | A playable animation generated from the paper's core ideas. |
+<div align="center">
+  <img src="docs/screenshots/banner.png" alt="PaperLens - Read AI Papers Without the Headache" width="100%">
+  <br><br>
+  <p><i>Paste an arXiv URL → Get grounded Q&A, instant explanations, and visual concept maps</i></p>
+</div>
 
-<p align="center">
-  <img src="docs/screenshots/01-landing.png" alt="1. Landing page" width="48%">
-  <img src="docs/screenshots/02-reader.png" alt="2. Smart reader" width="48%">
-</p>
-<p align="center">
-  <img src="docs/screenshots/03-tooltip.png" alt="3. Select-to-explain" width="48%">
-  <img src="docs/screenshots/04-conceptmap.png" alt="4. Concept map" width="48%">
-</p>
-<p align="center">
-  <img src="docs/screenshots/05-chat.png" alt="5. RAG chat" width="48%">
-  <img src="docs/screenshots/06-animation.png" alt="6. Manim animation" width="48%">
-</p>
+---
+
+## 📸 Features in Action
+
+### Landing Page & Paper Ingestion
+<div align="center">
+  <img src="docs/screenshots/01-landing.png" alt="Landing Page" width="85%">
+</div>
+
+> **Brutalist landing page** with arXiv URL input, "Try Demo" button, and comprehensive feature grid showcasing all capabilities.
+
+---
+
+### Smart PDF Reader with AI Chat
+<div align="center">
+  <img src="docs/screenshots/02-reader.png" alt="Smart Reader + PDF" width="85%">
+</div>
+
+> **Full paper PDF viewer** with zoom, pagination, and a **floating, resizable AI chat panel** for citation-grounded Q&A while reading.
+
+---
+
+### Select-to-Explain Tooltips
+<div align="center">
+  <img src="docs/screenshots/03-tooltip.png" alt="Select-to-Explain" width="85%">
+</div>
+
+> **Highlight any sentence** → Get an instant plain-English explanation with analogies. No need to Google jargon.
+
+---
+
+### Interactive Concept Map
+<div align="center">
+  <img src="docs/screenshots/04-conceptmap.png" alt="Concept Map" width="85%">
+</div>
+
+> **D3.js force-directed graph** showing how methods, datasets, metrics, and concepts relate across the paper.
+
+---
+
+### Citation-Grounded RAG Chat
+<div align="center">
+  <img src="docs/screenshots/05-chat.png" alt="RAG Chat" width="40%">
+</div>
+
+> **Ask anything about the paper** — every answer includes section + page citations with clickable chips to jump to sources.
+
+---
+
+### AI-Generated Manim Animations
+<div align="center">
+  <img src="docs/screenshots/06-animation.png" alt="Manim Animation" width="85%">
+</div>
+
+> **Playable animations** (e.g., attention mechanism walkthrough) generated from the paper's core concepts using fine-tuned LLMs.
+
+---
 
 ---
 
